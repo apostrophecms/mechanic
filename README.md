@@ -24,7 +24,7 @@ Make sure Apache isn't in the way, already listening on port 80. Remove it reall
 npm install -g mechanic
 ```
 
-NOTE: `mechanic` will reconfigure nginx after each command given to it. A strong effort is made not to mess up other uses of nginx. Mechanic's nginx configuration output is written to `/etc/nginx/mechanic.conf` and a directive to load it is placed at the end of `nginx.conf` if it is not already present. No other nginx configuration files are touched. You can change the `nginx` configuration folder if you want to, see below.
+NOTE: `mechanic` will reconfigure nginx after each command given to it. A strong effort is made not to mess up other uses of nginx. Mechanic's nginx configuration output is written to `/etc/nginx/conf.d/mechanic.conf`, where both Debian-flavored and Red Hat-flavored Linux will load it. No other nginx configuration files are touched. You can change the folder where `mechanic.conf` is written, see below.
 
 **Step Three:**
 
@@ -34,6 +34,8 @@ Let's add a single proxy that talks to one node process, which is listening on p
 
 *All commands must be run as root.*
 
+## Adding a site
+
 ```
 mechanic add mysite --host=mysite.com --backends=3000
 ```
@@ -42,11 +44,15 @@ Replace `mysite` with a good "shortname" for *your* site— letters and numbers 
 
 `mechanic` will reconfigure and restart `nginx` as you go along and remember everything you've asked it to include.
 
+## Aliases: alternate hostnames
+
 Next we decide we want some aliases: other hostnames that deliver the same content. It's common to do this in the pre-launch period. With the `update` command we can add new options to a site without starting from scratch:
 
 ```
 mechanic update mysite --aliases=www.mysite.com,mysite.temporary.com
 ```
+
+## Canonicalization: redirecting to the "real name"
 
 In production, it's better to redirect traffic so that everyone sees the same domain. Let's start redirecting from our aliases rather than keeping them in the address bar:
 
@@ -54,11 +60,20 @@ In production, it's better to redirect traffic so that everyone sees the same do
 mechanic update mysite --canonical=true
 ```
 
+## Setting a default site
+
 We've realized this site should be the default site for the entire server. If a request arrives with a hostname that doesn't match any `--host` or `--aliases` list, it should always go to this site, redirecting first if the site is canonical. We can do that with `default`:
 
 ```
 mechanic update mysite --default=true
 ```
+
+**Warning:** If your server came with a default website already configured,
+like the `server` block that appears in `/etc/nginx/nginx.conf` in
+CentOS 7, you will need to comment that out to use this feature. `mechanic`
+does not mess with the rest of your nginx settings, that is up to you.
+
+## Fast static file delivery
 
 Let's score a big performance win by serving our static files directly with nginx. This is simple: if a file matching the URL exists, nginx will serve it directly. Otherwise the request is still sent to node. All we have to do is tell nginx where our static files live.
 
@@ -68,11 +83,15 @@ mechanic update mysite --static=/opt/stagecoach/apps/mysite/current/public
 
 *Browsers will cache the static files for up to 7 days. That's a good thing, but if you use this feature make sure any dynamically generated files have new filenames on each new deployment.*
 
+## Load balancing
+
 Traffic is surging, so we've set up four node processes to take advantage of four cores. They are listening on ports 3000, 3001, 3002 and 3003. Let's tell nginx to distribute traffic to all of them:
 
 ```
 mechanic update mysite --backends=3000,3001,3002,3003
 ```
+
+### Across two servers
 
 This time we want to load-balance between two separate back-end servers, each of which is listening on two ports:
 
@@ -81,6 +100,8 @@ mechanic update mysite --backends=192.168.1.2:3000,192.168.1.2:3001,192.168.1.3:
 ```
 
 *You can use hostnames too.*
+
+## Secure sites
 
 Now we've added ecommerce and we need a secure site:
 
@@ -92,11 +113,15 @@ Now nginx will serve the site with `https` (as well as `http`) and look for `mys
 
 [See the nginx docs on how to handle intermediate certificates.](http://nginx.org/en/docs/http/configuring_https_servers.html)
 
+## Redirecting to the secure site
+
 Next we decide we want the site to be secure all the time, redirecting any traffic that arrives at the insecure site:
 
 ```
 mechanic update mysite --https=true --redirect-to-https=true
 ```
+
+## Shutting off HTTPS
 
 Now we've decided we don't want ecommerce anymore. Let's shut that off:
 
@@ -104,11 +129,15 @@ Now we've decided we don't want ecommerce anymore. Let's shut that off:
 mechanic update mysite --https=false
 ```
 
+## Removing a site
+
 Now let's remove the site completely:
 
 ```
 mechanic remove mysite
 ```
+
+## Disabling options
 
 You can disable any previously set option, such as `static`, by setting it to `false` or the empty string.
 
@@ -126,25 +155,36 @@ Apache doesn't have to be your default. You could also use `--host` and set up i
 
 There are a few global options you might want to change. Here's how. The values shown are the defaults.
 
+### conf: nginx configuration file location
+
 ```javascript
-mechanic set conf /etc/nginx
+mechanic set conf /etc/nginx/conf.d
 ```
 
-This is the folder where `nginx` configuration files live.
+This is the folder where the `mechanic.conf` nginx configuration file
+will be created. Note that both Red Hat and Debian-flavored Linux
+load everything in this folder by default.
+
+### restart: nginx restart command
 
 ```javascript
 mechanic set restart "nginx -s reload"
 ```
 
+The command to restart `nginx`.
+
 *Don't forget the quotes if spaces are present.* That's just how the shell works, but it bears repeating.
 
-The command to restart `nginx`.
+### logs: webserver log file folder
 
 ```javascript
 mechanic set logs /var/log/nginx
 ```
 
-If this isn't where you want your nginx load files, change the setting.
+If this isn't where you want your nginx access and error log files for
+each site, change the setting.
+
+### bind: bind address
 
 ```javascript
 mechanic set bind "*"
@@ -153,6 +193,8 @@ mechanic set bind "*"
 By default, `mechanic` tells nginx to accept traffic on all IP addresses assigned to the server. (`*` means "everything.") If this isn't what you want, set a specific ip address with `bind`.
 
 *If you reset this setting to `*` make sure you quote it, so the shell doesn't give you a list of filenames.*
+
+### template: custom nginx template file
 
 ```javascript
 mechanic set template /etc/mechanic/custom.conf
@@ -164,12 +206,14 @@ Take a look at the file `template.conf` in the `nginx` npm module. It's just a [
 
 You can copy that template anywhere you like, make your own modifications, then use `mechanic set template` to tell `mechanic` where to find it.
 
-## Refreshing after an update to mechanic itself
+## Refreshing your nginx configuration
 
-If we release a new update to `mechanic` that produces a better nginx configuration, you'll want to update mechanic, then refresh your nginx configuration files without actually changing any of your site settings. Just do this:
+Maybe you updated mechanic with `npm update -g mechanic` and you want our
+latest configuration. Maybe you edited your custom template. Either way,
+you want to rebuild your nginx configuration without changing any
+settings:
 
 ```
-npm install -g mechanic
 mechanic refresh
 ```
 
