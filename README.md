@@ -257,3 +257,7 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 `mechanic` was created to facilitate our work at [P'unk Avenue](http://punkave.com). We use it to host sites powered by [Apostrophe](https://apostrophenow.org).
 
+## Changelog
+
+0.1.0: initial release.
+
