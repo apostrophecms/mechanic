@@ -16,7 +16,7 @@ Under Ubuntu Linux that would be:
 apt-get install nginx
 ```
 
-Make sure Apache isn't in the way, already listening on port 80. Remove it really, really thoroughly. Or reconfigure it for an alternate port, like 9898, and set it up as a `fallback` as described below.
+Make sure Apache isn't in the way, already listening on port 80. Remove it really, really thoroughly. Or reconfigure it for an alternate port, like 9898, and set it up as a fallback as described below.
 
 **Step Two:**
 
