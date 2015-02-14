@@ -140,7 +140,7 @@ if (command === 'add') {
 } else if (command === 'set') {
   set();
 } else if (command === 'reset') {
-  set();
+  reset();
 } else {
   usage();
 }
