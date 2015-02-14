@@ -139,6 +139,8 @@ if (command === 'add') {
   list();
 } else if (command === 'set') {
   set();
+} else if (command === 'reset') {
+  set();
 } else {
   usage();
 }
@@ -278,4 +280,11 @@ function list()
     });
     console.log(shellEscape(words));
   });
+}
+
+function reset()
+{
+  data.settings = defaultSettings;
+  data.sites = [];
+  go();
 }

@@ -259,5 +259,7 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+0.1.1: `reset` command works.
+
 0.1.0: initial release.
 
