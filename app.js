@@ -24,7 +24,7 @@ if (argv.data) {
 var data = require('prettiest')({ json: dataFile });
 
 var defaultSettings = {
-  conf: '/etc/nginx',
+  conf: '/etc/nginx/conf.d',
   logs: '/var/log/nginx',
   restart: 'nginx -s reload',
   bind: '*'
@@ -233,7 +233,7 @@ function refresh() {
 }
 
 function go() {
-  var template = fs.readFileSync(__dirname + '/template.conf', 'utf8');
+  var template = fs.readFileSync(settings.template || (__dirname + '/template.conf'), 'utf8');
 
   var output = nunjucks.renderString(template, {
     sites: data.sites,
@@ -241,13 +241,6 @@ function go() {
   });
 
   fs.writeFileSync(settings.conf + '/mechanic.conf', output);
-
-  var main = fs.readFileSync(settings.conf + '/nginx.conf', 'utf8');
-
-  if (!main.match(/include mechanic.conf\;/)) {
-    main = main + '\ninclude mechanic.conf;\n';
-    fs.writeFileSync(settings.conf + '/nginx.conf', main);
-  }
 
   if (settings.restart !== false) {
     var restart = settings.restart || 'service nginx reload';

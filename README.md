@@ -24,7 +24,7 @@ Make sure Apache isn't in the way, already listening on port 80. Remove it reall
 npm install -g mechanic
 ```
 
-NOTE: `mechanic` will reconfigure nginx after each command given to it. A strong effort is made not to mess up other uses of nginx. Mechanic's nginx configuration output is written to `/etc/nginx/mechanic.conf` and a directive to load it is placed at the end of `nginx.conf` if it is not already present. No other nginx configuration files are touched. You can change the `nginx` configuration folder if you want to, see below.
+NOTE: `mechanic` will reconfigure nginx after each command given to it. A strong effort is made not to mess up other uses of nginx. Mechanic's nginx configuration output is written to `/etc/nginx/conf.d/mechanic.conf`, where both Debian-flavored and Red Hat-flavored Linux will load it. No other nginx configuration files are touched. You can change the folder where `mechanic.conf` is written, see below.
 
 **Step Three:**
 
@@ -127,10 +127,12 @@ Apache doesn't have to be your default. You could also use `--host` and set up i
 There are a few global options you might want to change. Here's how. The values shown are the defaults.
 
 ```javascript
-mechanic set conf /etc/nginx
+mechanic set conf /etc/nginx/conf.d
 ```
 
-This is the folder where `nginx` configuration files live.
+This is the folder where the `mechanic.conf` nginx configuration file
+will be created. Note that both Red Hat and Debian-flavored Linux
+load everything in this folder by default.
 
 ```javascript
 mechanic set restart "nginx -s reload"
