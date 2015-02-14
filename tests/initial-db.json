@@ -1,0 +1,7 @@
+{
+  "settings": {
+    "conf": "./nginx",
+    "logs": "./logs",
+    "restart": "touch restarted"
+  }
+}
