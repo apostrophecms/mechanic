@@ -146,8 +146,10 @@ You can disable any previously set option, such as `static`, by setting it to `f
 If you also want to serve some content with Apache on the same server, first configure Apache to listen on port `9898` instead of `80`, then set up a default site for `mechanic` that forwards traffic there:
 
 ```javascript
-mechanic add apache --ports=9898 --default=true
+mechanic add apache --host=dummy --ports=9898 --default=true
 ```
+
+We still need a `host` setting even for a default site (TODO: remove this requirement).
 
 Apache doesn't have to be your default. You could also use `--host` and set up individual sites to be forwarded to Apache.
 
@@ -258,6 +260,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 `mechanic` was created to facilitate our work at [P'unk Avenue](http://punkave.com). We use it to host sites powered by [Apostrophe](https://apostrophenow.org).
 
 ## Changelog
+
+0.1.3: corrected documentation for Apache fallback strategy.
 
 0.1.1, 0.1.2: `reset` command works.
 
