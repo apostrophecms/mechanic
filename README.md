@@ -261,6 +261,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+0.1.7: set the ssl flag properly for nginx in the listen statement.
+
 0.1.6: look in the documented place for SSL certificates (/etc/nginx/certs).
 
 0.1.5: don't try to reject invalid arguments, as yargs helpfully introduces camel-cased versions of hyphenated arguments, causing false positives and breaking our hyphenated options. This isn't great; we should find out how to disable that behavior in yargs.
