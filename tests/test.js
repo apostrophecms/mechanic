@@ -84,14 +84,46 @@ expect({
   ]
 }, 'Test failed: adding two sites with https should store the right JSON');
 
+shelljs.exec('node ../app.js --data=./test.json update site2 --host=site2.com --backends=3001 --https --redirect-to-https');
+
+expect({
+  settings: {
+    conf: './nginx',
+    logs: './logs',
+    restart: 'touch restarted',
+    bind: '*'
+  },
+  "sites": [
+    {
+      "shortname": "site1",
+      "host": "site1.com",
+      "backends": [ 'localhost:3000' ],
+      "https": true
+    },
+    {
+      "shortname": "site2",
+      "host": "site2.com",
+      "backends": [ 'localhost:3001' ],
+      "https": true,
+      "redirect-to-https": true
+    },
+  ]
+}, 'Test failed: redirect-to-https should add the right JSON');
+
 var output = shelljs.exec('node ../app.js --data=./test.json list', { silent: true }).output;
 
-if (output !== "mechanic set conf './nginx'\n" +
+var expected = "mechanic set conf './nginx'\n" +
   "mechanic set logs './logs'\n" +
   "mechanic set restart 'touch restarted'\n" +
   "mechanic add site1 '--host=site1.com' '--backends=localhost:3000' '--https=true'\n" +
-  "mechanic add site2 '--host=site2.com' '--backends=localhost:3001' '--https=true'\n") {
+  "mechanic add site2 '--host=site2.com' '--backends=localhost:3001' '--https=true' '--redirect-to-https=true'\n";
+
+if (output !== expected) {
   console.error("Test failed: --list did not output correct commands to establish the two sites again");
+  console.error('GOT:');
+  console.error(output);
+  console.error('EXPECTED:');
+  console.error(expected);
   process.exit(1);
 }
 

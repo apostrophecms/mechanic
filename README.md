@@ -261,6 +261,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+0.1.5: don't try to reject invalid arguments, as yargs helpfully introduces camel-cased versions of hyphenated arguments, causing false positives and breaking our hyphenated options. This isn't great; we should find out how to disable that behavior in yargs.
+
 0.1.3: corrected documentation for Apache fallback strategy.
 
 0.1.1, 0.1.2: `reset` command works.

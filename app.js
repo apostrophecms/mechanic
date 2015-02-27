@@ -192,7 +192,11 @@ function update(add) {
       return;
     }
     if (!_.has(options, key)) {
-      usage('Unrecognized option: ' + key);
+      return;
+      // Unfortunately this is hard to do with yargs which
+      // helpfully creates camelCaseAliases of your hyphenated-options,
+      // creating false positives here
+      // usage('Unrecognized option: ' + key);
     }
     try {
       site[key] = parsers[options[key]](val);
