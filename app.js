@@ -25,6 +25,7 @@ var data = require('prettiest')({ json: dataFile });
 
 var defaultSettings = {
   conf: '/etc/nginx/conf.d',
+  overrides: '/etc/nginx/mechanic-overrides',
   logs: '/var/log/nginx',
   restart: 'nginx -s reload',
   bind: '*'
@@ -244,6 +245,26 @@ function go() {
   var output = nunjucks.renderString(template, {
     sites: data.sites,
     settings: settings
+  });
+
+  // Set up include-able files to allow
+  // easy customizations
+  _.each(data.sites, function(site) {
+    var folder = settings.overrides;
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder);
+    }
+    folder += '/' + site.shortname;
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder);
+    }
+    var files = [ 'location', 'proxy' ];
+    _.each(files, function(file) {
+      var filename = folder + '/' + file;
+      if (!fs.existsSync(filename)) {
+        fs.writeFileSync(filename, '# Your custom nginx directives go here\n');
+      }
+    });
   });
 
   fs.writeFileSync(settings.conf + '/mechanic.conf', output);

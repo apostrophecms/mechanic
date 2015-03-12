@@ -208,6 +208,23 @@ Take a look at the file `template.conf` in the `nginx` npm module. It's just a [
 
 You can copy that template anywhere you like, make your own modifications, then use `mechanic set template` to tell `mechanic` where to find it.
 
+### Lazy overrides
+
+If you don't want to customize our template, check out the convenience override files that `mechanic` creates for you:
+
+```
+/etc/nginx/mechanic-overrides/myshortname/location
+/etc/nginx/mechanic-overrides/myshortname/proxy
+```
+
+The first one is loaded inside the main `location` block, and is a good place to add something like CORS headers for static font files.
+
+The second one is loaded inside the proxy server configuration.
+
+These files start out empty; you can add whatever you like.
+
+Of course, if this isn't enough flexibility for your needs, you can create a custom template.
+
 ## Refreshing your nginx configuration
 
 Maybe you updated mechanic with `npm update -g mechanic` and you want our
@@ -260,6 +277,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 `mechanic` was created to facilitate our work at [P'unk Avenue](http://punkave.com). We use it to host sites powered by [Apostrophe](https://apostrophenow.org).
 
 ## Changelog
+
+0.1.8: load convenience overrides from suitably named nginx configuration files.
 
 0.1.7: set the ssl flag properly for nginx in the listen statement.
 

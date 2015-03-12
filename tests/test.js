@@ -2,6 +2,10 @@ var fs = require('fs');
 
 var shelljs = require('shelljs');
 
+if (fs.existsSync('./mechanic-overrides/mysite/location')) {
+  fs.unlinkSync('./mechanic-overrides/mysite/location');
+}
+
 if (fs.existsSync(__dirname + '/test.json')) {
   fs.unlinkSync(__dirname + '/test.json');
 }
@@ -17,6 +21,7 @@ expect({
     conf: './nginx',
     logs: './logs',
     restart: 'touch restarted',
+    overrides: './mechanic-overrides',
     bind: '*'
   },
   "sites": [
@@ -35,6 +40,7 @@ expect({
     conf: './nginx',
     logs: './logs',
     restart: 'touch restarted',
+    overrides: './mechanic-overrides',
     bind: '*'
   },
   "sites": [
@@ -54,6 +60,7 @@ expect({
     conf: './nginx',
     logs: './logs',
     restart: 'touch restarted',
+    overrides: './mechanic-overrides',
     bind: '*'
   },
   "sites": []
@@ -66,6 +73,7 @@ expect({
     conf: './nginx',
     logs: './logs',
     restart: 'touch restarted',
+    overrides: './mechanic-overrides',
     bind: '*'
   },
   "sites": [
@@ -91,6 +99,7 @@ expect({
     conf: './nginx',
     logs: './logs',
     restart: 'touch restarted',
+    overrides: './mechanic-overrides',
     bind: '*'
   },
   "sites": [
@@ -115,6 +124,7 @@ var output = shelljs.exec('node ../app.js --data=./test.json list', { silent: tr
 var expected = "mechanic set conf './nginx'\n" +
   "mechanic set logs './logs'\n" +
   "mechanic set restart 'touch restarted'\n" +
+  "mechanic set overrides './mechanic-overrides'\n" +
   "mechanic add site1 '--host=site1.com' '--backends=localhost:3000' '--https=true'\n" +
   "mechanic add site2 '--host=site2.com' '--backends=localhost:3001' '--https=true' '--redirect-to-https=true'\n";
 
@@ -124,6 +134,11 @@ if (output !== expected) {
   console.error(output);
   console.error('EXPECTED:');
   console.error(expected);
+  process.exit(1);
+}
+
+if (!fs.existsSync('./mechanic-overrides/mysite/location')) {
+  console.error('location override file for mysite does not exist');
   process.exit(1);
 }
 

@@ -2,6 +2,7 @@
   "settings": {
     "conf": "./nginx",
     "logs": "./logs",
-    "restart": "touch restarted"
+    "restart": "touch restarted",
+    "overrides": "./mechanic-overrides"
   }
 }
