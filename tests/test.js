@@ -33,6 +33,37 @@ expect({
   ]
 }, 'Test failed: adding a site should store the right JSON');
 
+shelljs.exec('node ../app.js --data=./test.json update mysite --host=mysite.com --backend=3001');
+
+expect({
+  settings: {
+    conf: './nginx',
+    logs: './logs',
+    restart: 'touch restarted',
+    overrides: './mechanic-overrides',
+    bind: '*'
+  },
+  "sites": [
+    {
+      "shortname": "mysite",
+      "host": "mysite.com",
+      "backends": [ 'localhost:3001' ]
+    }
+  ]
+}, 'Test failed: alias was not accepted, or update command rejected');
+
+// back to port 3000 which other tests want to see
+
+shelljs.exec('node ../app.js --data=./test.json update mysite --host=mysite.com --backends=3000');
+
+// test a bogus option
+
+var result = shelljs.exec('node ../app.js --data=./test.json update mysite --host=mysite.com --backends=3000 --ludicrous', { silent: true });
+if (!result.output.match(/Unrecognized option: ludicrous/)) {
+  console.error('Test failed: bogus option did not result in error.');
+  process.exit(1);
+}
+
 shelljs.exec('node ../app.js --data=./test.json update mysite --aliases=www.mysite.com,mysite.temporary.com');
 
 expect({
@@ -146,7 +177,7 @@ function expect(correct, message) {
   var data = JSON.parse(fs.readFileSync('test.json', 'utf8'));
   if (JSON.stringify(data) !== JSON.stringify(correct)) {
     console.error(message);
-    console.error(data);
+    console.error(JSON.stringify(data));
     process.exit(1);
   }
 }

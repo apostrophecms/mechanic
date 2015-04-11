@@ -1,4 +1,4 @@
-var argv = require('yargs').argv;
+var argv = require('boring')();
 var _ = require('lodash');
 var fs = require('fs');
 var shelljs = require('shelljs');
@@ -42,6 +42,10 @@ var command = argv._[0];
 if (!command) {
   usage();
 }
+
+var aliases = {
+  'backend': 'backends'
+};
 
 var options = {
   'host': 'string',
@@ -189,15 +193,16 @@ function update(add) {
   }
 
   _.each(argv, function(val, key) {
-    if ((key === '_') || (key === 'c') || (key.substr(0, 1) === '$')) {
+    if (key === '_') {
       return;
     }
+
+    if (_.has(aliases, key)) {
+      key = aliases[key];
+    }
+
     if (!_.has(options, key)) {
-      return;
-      // Unfortunately this is hard to do with yargs which
-      // helpfully creates camelCaseAliases of your hyphenated-options,
-      // creating false positives here
-      // usage('Unrecognized option: ' + key);
+      usage('Unrecognized option: ' + key);
     }
     try {
       site[key] = parsers[options[key]](val);
@@ -239,17 +244,28 @@ function refresh() {
   go();
 }
 
+function validSiteFilter(site) {
+  if (!(site.backends && site.backends.length)) {
+    console.log('WARNING: skipping ' + site.shortname + ' because no backends have been specified (hint: --backends=portnumber)');
+    return false;
+  }
+  return true;
+}
+
 function go() {
+
+  var sites = _.filter(data.sites, validSiteFilter);
+
   var template = fs.readFileSync(settings.template || (__dirname + '/template.conf'), 'utf8');
 
   var output = nunjucks.renderString(template, {
-    sites: data.sites,
+    sites: sites,
     settings: settings
   });
 
   // Set up include-able files to allow
   // easy customizations
-  _.each(data.sites, function(site) {
+  _.each(sites, function(site) {
     var folder = settings.overrides;
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder);
