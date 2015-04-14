@@ -278,6 +278,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+0.1.11: parse `host:port` correctly with the `--backends` option.
+
 0.1.10: the `boring` dependency was missing, this is fixed.
 
 0.1.9: Accept `backend` as an alias for `backends`. Reject invalid hyphenated options passed to `add` and `update`, as their absence usually means you've mistyped something important. Don't crash nginx if there are no backends, just skip that site and print a warning. Use [boring](https://www.npmjs.com/package/boring) instead of `yargs`.

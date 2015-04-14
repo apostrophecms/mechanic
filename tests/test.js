@@ -33,7 +33,7 @@ expect({
   ]
 }, 'Test failed: adding a site should store the right JSON');
 
-shelljs.exec('node ../app.js --data=./test.json update mysite --host=mysite.com --backend=3001');
+shelljs.exec('node ../app.js --data=./test.json update mysite --host=mysite.com --backend=localhost:3001');
 
 expect({
   settings: {
@@ -50,7 +50,7 @@ expect({
       "backends": [ 'localhost:3001' ]
     }
   ]
-}, 'Test failed: alias was not accepted, or update command rejected');
+}, 'Test failed: alias was not accepted, or update command rejected, or host:port parsed badly');
 
 // back to port 3000 which other tests want to see
 

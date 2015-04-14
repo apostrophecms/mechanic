@@ -77,8 +77,8 @@ var parsers = {
         throw 'A list of port numbers and/or address:port combinations is expected, separated by commas';
       }
       var host, port;
-      if (matches[1]) {
-        host = matches[1];
+      if (matches[2]) {
+        host = matches[2];
       } else {
         host = 'localhost';
       }
