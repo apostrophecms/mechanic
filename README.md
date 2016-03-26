@@ -146,7 +146,7 @@ You can disable any previously set option, such as `static`, by setting it to `f
 If you also want to serve some content with Apache on the same server, first configure Apache to listen on port `9898` instead of `80`, then set up a default site for `mechanic` that forwards traffic there:
 
 ```javascript
-mechanic add apache --host=dummy --ports=9898 --default=true
+mechanic add apache --host=dummy --backends=9898 --default=true
 ```
 
 We still need a `host` setting even for a default site (TODO: remove this requirement).
