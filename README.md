@@ -278,6 +278,10 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+0.1.13: pass the `X-Forwarded-Proto` header for compatibility with the `secure` flag for session cookies, provided that Express is configured to trust the first proxy.
+
+0.1.12: killed support for `sslv3` as it is insecure.
+
 0.1.11: parse `host:port` correctly with the `--backends` option.
 
 0.1.10: the `boring` dependency was missing, this is fixed.
