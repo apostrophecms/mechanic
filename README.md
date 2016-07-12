@@ -278,7 +278,7 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
-0.1.13: pass the `X-Forwarded-Proto` header for compatibility with the `secure` flag for session cookies, provided that Express is configured to trust the first proxy.
+0.1.13—0.1.14: pass the `X-Forwarded-Proto` header for compatibility with the `secure` flag for session cookies, provided that Express is configured to trust the first proxy.
 
 Killed support for `tlsv1` as it is insecure.
 
