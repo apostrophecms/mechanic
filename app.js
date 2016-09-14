@@ -54,6 +54,7 @@ var options = {
   'canonical': 'boolean',
   'default': 'boolean',
   'static': 'string',
+  'autoindex': 'boolean',
   'https': 'boolean',
   'redirect-to-https': 'boolean'
 };
@@ -245,7 +246,7 @@ function refresh() {
 }
 
 function validSiteFilter(site) {
-  if (!(site.backends && site.backends.length)) {
+  if ((!(site.backends && site.backends.length)) && (!site.static)) {
     console.log('WARNING: skipping ' + site.shortname + ' because no backends have been specified (hint: --backends=portnumber)');
     return false;
   }
@@ -274,7 +275,7 @@ function go() {
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder);
     }
-    var files = [ 'location', 'proxy' ];
+    var files = [ 'location', 'proxy', 'server', 'top' ];
     _.each(files, function(file) {
       var filename = folder + '/' + file;
       if (!fs.existsSync(filename)) {

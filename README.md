@@ -83,6 +83,32 @@ mechanic update mysite --static=/opt/stagecoach/apps/mysite/current/public
 
 *Browsers will cache the static files for up to 7 days. That's a good thing, but if you use this feature make sure any dynamically generated files have new filenames on each new deployment.*
 
+## Serving `index.html` for bare directories
+
+When using `--static`, you can optionally enable serving `index.html` automatically when a URL matches a directory name by using the `--autoindex` option.
+
+```
+mechanic update mysite --autoindex
+```
+
+As with all boolean options you can change your mind later:
+
+```
+mechanic update mysite --autoindex=false
+```
+
+## Static websites
+
+Although static websites will never be a primary use case for `mechanic`, you can set up a perfectly reasonable static webserver like this:
+
+```
+mechanic add mysite --host=mysite.com --static=/var/www/html/mysite --autoindex
+```
+
+**The `backends` option is no longer mandatory when `--static` is present.**
+
+If you have more elaborate use cases that don't involve a reverse proxy, you should really create a separate nginx configuration file for that site.
+
 ## Load balancing
 
 Traffic is surging, so we've set up four node processes to take advantage of four cores. They are listening on ports 3000, 3001, 3002 and 3003. Let's tell nginx to distribute traffic to all of them:
@@ -213,13 +239,19 @@ You can copy that template anywhere you like, make your own modifications, then 
 If you don't want to customize our template, check out the convenience override files that `mechanic` creates for you:
 
 ```
+/etc/nginx/mechanic-overrides/myshortname/top
+/etc/nginx/mechanic-overrides/myshortname/server
 /etc/nginx/mechanic-overrides/myshortname/location
 /etc/nginx/mechanic-overrides/myshortname/proxy
 ```
 
-The first one is loaded inside the main `location` block, and is a good place to add something like CORS headers for static font files.
+`top` is loaded before any of mechanic's directives for that site. Use it when nothing else fits.
 
-The second one is loaded inside the proxy server configuration.
+`server` is included inside the `server` block for the site, just before the `location` block, when `redirect-to-https` is not in effect. it is a good place to change a setting like `client_max_body_size` or `access_log`.
+
+`location` is included inside the `location` block, and is a good place to add something like CORS headers for static font files.
+
+`proxy` is loaded inside the proxy server configuration and is ideal if you need to override mechanic's proxy settings.
 
 These files start out empty; you can add whatever you like.
 
@@ -277,6 +309,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 `mechanic` was created to facilitate our work at [P'unk Avenue](http://punkave.com). We use it to host sites powered by [Apostrophe](https://apostrophenow.org).
 
 ## Changelog
+
+1.0.0: Officially stable and following semantic versioning from here on out. Also added `top` and `server` override files and the `--index` option, and made `backends` optional when `static` is present. This allows the use of mechanic to set up very simple static websites.
 
 0.1.13—0.1.14: pass the `X-Forwarded-Proto` header for compatibility with the `secure` flag for session cookies, provided that Express is configured to trust the first proxy.
 
