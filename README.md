@@ -97,6 +97,8 @@ As with all boolean options you can change your mind later:
 mechanic update mysite --autoindex=false
 ```
 
+In a typical proxy configuration, this makes it possible to use an `index.html` file as a cached static version of a resource with a "pretty URL" like `/people` that would normally hit your back end server.
+
 ## Static websites
 
 Although static websites will never be a primary use case for `mechanic`, you can set up a perfectly reasonable static webserver like this:
