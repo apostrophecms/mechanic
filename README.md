@@ -312,6 +312,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+1.0.1: Moved standard gzip directives to the start of the server block. Otherwise responses proxied through to node are not compressed. A large performance win.
+
 1.0.0: Officially stable and following semantic versioning from here on out. Also added `top` and `server` override files and the `--index` option, and made `backends` optional when `static` is present. This allows the use of mechanic to set up very simple static websites.
 
 0.1.13—0.1.14: pass the `X-Forwarded-Proto` header for compatibility with the `secure` flag for session cookies, provided that Express is configured to trust the first proxy.
