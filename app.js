@@ -247,13 +247,14 @@ function update(add) {
   if(site.certify) {
     let _provider = site.certProvider || settings.certProvider;
     let provider = providers[_provider];
+    let aliases = site.aliases||[];
 
     if(provider) {
       let result = 0;
       let parts = provider.replace(/\n/g,';').split(';');
       for(const part of parts) {
         result |= shelljs.exec(nunjucks.renderString(part, {
-          hosts: [site.host, ...site.aliases],
+          hosts: [site.host, ...aliases],
           name: site.shortname,
           host: site.host
         })).code;
