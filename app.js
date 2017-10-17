@@ -4,6 +4,7 @@ var fs = require('fs');
 var shelljs = require('shelljs');
 var resolve = require('path').resolve;
 var shellEscape = require('shell-escape');
+const debug = false;
 
 var dataFile;
 if (argv.data) {
@@ -15,9 +16,13 @@ if (argv.data) {
   // have a /var/lib/misc folder for storage of "state files
   // that don't need a directory." But create it if it's
   // somehow missing (Mac for instance).
-  if (!fs.existsSync('/var/lib/misc')) {
+  if (!debug && !fs.existsSync('/var/lib/misc')) {
     fs.mkdirSync('/var/lib/misc', 0700);
   }
+}
+
+const certProviders = {
+  letsencrypt: 'letsencrypt certonly --standalone {% for host in hosts %}-d {{host}} {% endfor %}; ln -s /etc/letsencrypt/live/{{host}}/fullchain.pem /etc/nginx/certs/{{name}}.cer; ln -s /etc/letsencrypt/live/{{host}}/privkey.pem /etc/nginx/certs/{{name}}.key'
 }
 
 
@@ -25,16 +30,25 @@ var data = require('prettiest')({ json: dataFile });
 
 var defaultSettings = {
   conf: '/etc/nginx/conf.d',
+  certProviders: '/etc/nginx/mechanic-certproviders',
   overrides: '/etc/nginx/mechanic-overrides',
   logs: '/var/log/nginx',
   restart: 'nginx -s reload',
-  bind: '*'
+  bind: '*',
+  autoCert: 'false',
+  certProvider: 'letsencrypt',
+  preConfig: 'service nginx stop',
+  postConfig: 'service nginx start'
 };
 
 _.defaults(data, { settings: {} });
 _.defaults(data.settings, defaultSettings);
 
 var settings = data.settings;
+
+if (!debug && !fs.existsSync(settings.certProviders)) {
+  fs.mkdirSync(settings.certProviders);
+}
 
 var nunjucks = require('nunjucks');
 
@@ -56,7 +70,9 @@ var options = {
   'static': 'string',
   'autoindex': 'boolean',
   'https': 'boolean',
-  'redirect-to-https': 'boolean'
+  'redirect-to-https': 'boolean',
+  'certify': 'boolean',
+  'certProvider': 'string'
 };
 
 var parsers = {
@@ -179,6 +195,11 @@ function update(add) {
   var shortname = argv._[1];
   var site;
 
+  if(settings.preConfig) {
+    if(shelljs.exec(settings.preConfig).code !== 0) {
+      console.error('ERROR: failed to run preConfig script: \'' + settings.preConfig + '\'.');
+    }
+  }
   if (add) {
     if (findSite(shortname)) {
       usage('Site already exists, use update');
@@ -213,6 +234,38 @@ function update(add) {
     }
   });
 
+  let _hardProviders = debug?[]:fs.readdirSync(settings.certProviders),
+    hardProviders = {};
+  for(const provider of _hardProviders) {
+    hardProviders[provider] = fs.readFileSync(`${settings.certProviders}/${provider}`).toString();
+  }
+  let providers = {
+    ...certProviders,
+    ...hardProviders
+  }
+
+  if(site.certify) {
+    let _provider = site.certProvider || settings.certProvider;
+    let provider = providers[_provider];
+
+    if(provider) {
+      let result = 0;
+      let parts = provider.replace(/\n/g,';').split(';');
+      for(const part of parts) {
+        result |= shelljs.exec(nunjucks.renderString(part, {
+          hosts: [site.host, ...site.aliases],
+          name: site.shortname,
+          host: site.host
+        })).code;
+      }
+      if(result) console.error('ERROR: certProvider ' + _provider + ' terminated with non-zero exit code.');
+    }
+  }
+  if(settings.postConfig) {
+    if(shelljs.exec(settings.postConfig).code !== 0) {
+      console.error('ERROR: failed to run postConfig script: \'' + settings.postConfig + '\'.');
+    }
+  }
   go();
 }
 
@@ -284,7 +337,7 @@ function go() {
     });
   });
 
-  fs.writeFileSync(settings.conf + '/mechanic.conf', output);
+  if(!debug) fs.writeFileSync(settings.conf + '/mechanic.conf', output);
 
   if (settings.restart !== false) {
     var restart = settings.restart || 'service nginx reload';

@@ -1,6 +1,7 @@
 npm-debug.log
 *.DS_Store
 node_modules
+package-lock.json
 tests/nginx/*
 tests/test.json*
 tests/mechanic-overrides
