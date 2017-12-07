@@ -4,7 +4,7 @@ var fs = require('fs');
 var shelljs = require('shelljs');
 var resolve = require('path').resolve;
 var shellEscape = require('shell-escape');
-const debug = false;
+var debug = false;
 
 var dataFile;
 if (argv.data) {
@@ -21,7 +21,7 @@ if (argv.data) {
   }
 }
 
-const certProviders = {
+var certProviders = {
   letsencrypt: 'letsencrypt certonly --standalone {% for host in hosts %}-d {{host}} {% endfor %}; ln -s /etc/letsencrypt/live/{{host}}/fullchain.pem /etc/nginx/certs/{{name}}.cer; ln -s /etc/letsencrypt/live/{{host}}/privkey.pem /etc/nginx/certs/{{name}}.key'
 }
 
@@ -234,27 +234,25 @@ function update(add) {
     }
   });
 
-  let _hardProviders = debug?[]:fs.readdirSync(settings.certProviders),
+  var _hardProviders = debug?[]:fs.readdirSync(settings.certProviders),
     hardProviders = {};
-  for(const provider of _hardProviders) {
+  for(var provider of _hardProviders) {
     hardProviders[provider] = fs.readFileSync(`${settings.certProviders}/${provider}`).toString();
   }
-  let providers = {
-    ...certProviders,
-    ...hardProviders
-  }
+  var providers = {};
+  Object.assign(providers, certProviders, hardProviders);
 
   if(site.certify) {
-    let _provider = site.certProvider || settings.certProvider;
-    let provider = providers[_provider];
-    let aliases = site.aliases||[];
+    var _provider = site.certProvider || settings.certProvider;
+    var provider = providers[_provider];
+    var aliases = site.aliases||[];
 
     if(provider) {
-      let result = 0;
-      let parts = provider.replace(/\n/g,';').split(';');
-      for(const part of parts) {
+      var result = 0;
+      var parts = provider.replace(/\n/g,';').split(';');
+      for(var part of parts) {
         result |= shelljs.exec(nunjucks.renderString(part, {
-          hosts: [site.host, ...aliases],
+          hosts: [site.host].concat(aliases),
           name: site.shortname,
           host: site.host
         })).code;
