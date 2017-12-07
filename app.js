@@ -2,7 +2,8 @@ var argv = require('boring')();
 var _ = require('lodash');
 var fs = require('fs');
 var shelljs = require('shelljs');
-var resolve = require('path').resolve;
+var path = require('path');
+var resolve = path.resolve;
 var shellEscape = require('shell-escape');
 var debug = false;
 
@@ -36,10 +37,14 @@ var defaultSettings = {
   restart: 'nginx -s reload',
   bind: '*',
   autoCert: 'false',
-  certProvider: 'letsencrypt',
+  certProvider: null,
   preConfig: 'service nginx stop',
   postConfig: 'service nginx start'
 };
+
+if(shelljs.exec('which letsencrypt').code === 0) {
+  defaultSettings.certProvider = 'letsencrypt';
+}
 
 _.defaults(data, { settings: {} });
 _.defaults(data.settings, defaultSettings);
@@ -237,13 +242,13 @@ function update(add) {
   var _hardProviders = debug?[]:fs.readdirSync(settings.certProviders),
     hardProviders = {};
   for(var provider of _hardProviders) {
-    hardProviders[provider] = fs.readFileSync(`${settings.certProviders}/${provider}`).toString();
+    hardProviders[provider] = fs.readFileSync(path.join(settings.certProviders,provider)).toString();
   }
   var providers = {};
   Object.assign(providers, certProviders, hardProviders);
 
-  if(site.certify) {
-    var _provider = site.certProvider || settings.certProvider;
+  var _provider = site.certProvider || settings.certProvider;
+  if(site.certify && _provider) {
     var provider = providers[_provider];
     var aliases = site.aliases||[];
 
