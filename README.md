@@ -312,6 +312,10 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+1.0.2: Canonicalization also applies to https. Of course it won't magically
+work for aliases your certificate doesn't cover, but it will work for
+www to bare domain or vice versa, or whatever your certificate does include.
+
 1.0.1: Moved standard gzip directives to the start of the server block. Otherwise responses proxied through to node are not compressed. A large performance win.
 
 1.0.0: Officially stable and following semantic versioning from here on out. Also added `top` and `server` override files and the `--index` option, and made `backends` optional when `static` is present. This allows the use of mechanic to set up very simple static websites.
