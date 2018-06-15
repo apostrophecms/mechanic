@@ -168,6 +168,34 @@ if (output !== expected) {
   process.exit(1);
 }
 
+shelljs.exec('node ../app.js --data=./test.json remove site1');
+shelljs.exec('node ../app.js --data=./test.json remove site2');
+shelljs.exec('node ../app.js --data=./test.json add defaultsite --host=defaultsite.com --default --backends=3000');
+shelljs.exec('node ../app.js --data=./test.json add nondefaultsite --host=nondefaultsite.com --backends=3000');
+
+expect({
+  settings: {
+    conf: './nginx',
+    logs: './logs',
+    restart: 'touch restarted',
+    overrides: './mechanic-overrides',
+    bind: '*'
+  },
+  "sites": [
+    {
+      "shortname": "nondefaultsite",
+      "host": "nondefaultsite.com",
+      "backends": [ 'localhost:3000' ]
+    },
+    {
+      "shortname": "defaultsite",
+      "host": "defaultsite.com",
+      "default": true,
+      "backends": [ 'localhost:3000' ]
+    },
+  ]
+}, 'Test failed: default site should always wind up at the end of the list');
+
 if (!fs.existsSync('./mechanic-overrides/mysite/location')) {
   console.error('location override file for mysite does not exist');
   process.exit(1);

@@ -255,6 +255,38 @@ function validSiteFilter(site) {
 
 function go() {
 
+  // Reorder the sites so that default servers come after
+  // all others. According to the nginx documentation this
+  // shouldn't matter because any explicit server_name matches
+  // should win, but we've seen exceptions, and this is
+  // aesthetically pleasing anyway. -Tom
+
+  _.each(data.sites, function(site, i) {
+    site._index = i;
+  });
+
+  data.sites.sort(function(a, b) {
+    if (a.default === b.default) {
+      if (a._index < b._index) {
+        return -1;
+      } else if (b._index > a._index) {
+        return 1;
+      } else {
+        return 0;
+      }
+    } else {
+      if (a.default) {
+        return 1;
+      } else if (b.default) {
+        return -1;
+      }
+    }
+  });
+
+  _.each(data.sites, function(site) {
+    delete site._index;
+  });
+
   var sites = _.filter(data.sites, validSiteFilter);
 
   var template = fs.readFileSync(settings.template || (__dirname + '/template.conf'), 'utf8');
