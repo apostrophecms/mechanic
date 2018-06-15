@@ -314,6 +314,10 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 1.1.0: sites set `--default=true` are always moved to the end of the list, and the end of the generated nginx configuration file. This is helpful when reading `mechanic list` and also  works around an issue we've seen in at least one case where nginx did not appear to honor its usual rule that a `server_name` match should always beat `default_server`.
 
+1.0.2: Canonicalization also applies to https. Of course it won't magically
+work for aliases your certificate doesn't cover, but it will work for
+www to bare domain or vice versa, or whatever your certificate does include.
+
 1.0.1: Moved standard gzip directives to the start of the server block. Otherwise responses proxied through to node are not compressed. A large performance win.
 
 1.0.0: Officially stable and following semantic versioning from here on out. Also added `top` and `server` override files and the `--index` option, and made `backends` optional when `static` is present. This allows the use of mechanic to set up very simple static websites.
