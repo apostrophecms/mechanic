@@ -300,6 +300,19 @@ You don't have to use our nginx configuration template.
 
 Take a look at the file `template.conf` in the `nginx` npm module. It's just a [nunjucks](http://mozilla.github.io/nunjucks/) template that builds an `nginx` configuration based on your `mechanic` settings.
 
+## Custom nginx path
+
+If you use brew (a package manager for mac) to install nginx, nginx install path will be `/usr/local/etc/nginx`.
+Mechanic default nginx path is `/etc/nginx`.
+You can change default nginx path below:
+
+```
+mechanic set restart 'brew services restart nginx'
+mechanic set conf '/usr/local/etc/nginx/conf.d'
+mechanic set overrides /usr/local/etc/nginx/mechanic-overrides
+mechanic set logs /usr/local/var/log/nginx
+```
+
 ## Storing the database in a different place
 
 It's stored in `/var/lib/misc/mechanic.json`. That's [one hundred percent correct according to the filesystem hierarchy standard](http://www.pathname.com/fhs/pub/fhs-2.3.pdf), adhered to by all major Linux distributions and many other flavors of Unix. But if you absolutely insist, you can use the `--data` option to specify another location. You'll have to do it every time you run `mechanic`, though. That's why we only use this option for unit tests.
