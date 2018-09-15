@@ -34,6 +34,10 @@ Let's add a single proxy that talks to one node process, which is listening on p
 
 *All commands must be run as root.*
 
+**(Optional) Step Four:**
+
+Install letsencrypt for automatic host certification or configure your own certificate provider.
+
 ## Adding a site
 
 ```
@@ -148,6 +152,46 @@ Next we decide we want the site to be secure all the time, redirecting any traff
 ```
 mechanic update mysite --https=true --redirect-to-https=true
 ```
+
+## Certifying a secure site
+
+You may use a certificate authority to automatically get SSL certificates for the hostnames on your site.
+
+`letsencrypt` is included by default.
+
+You may add more providers as shell scripts in `/etc/nginx/mechanic-certproviders`.
+
+The files can be nunjucks templates, where the following variables are available:
+
+`hosts`: array of hostnames configured for your site, including aliases
+`name`: the name of your site
+`host`: your site's default host
+
+To automatically generate certificates for a site, add the `--certify` flag to your site configuration, like so:
+
+```
+mechanic update mysite --certify=true
+```
+or
+```
+mechanic add mysite --host=example.com --aliases=example1.com,example2.com --https=true --certify=true
+```
+
+To change the global certificate provider, run
+```
+mechanic set certProvider myCertProvider
+```
+where `myCertProvider` is the name of the file you've created in `/etc/nginx/mechanic-certproviders`.
+
+You may change the certificate provider per site.
+
+To do so, run
+```
+mechanic update mysite --certProvider=myCertProvider --certify
+```
+
+For the default letsencrypt provider, certificates are symlinked to the configuration folder,
+so you can use `letsencrypt renew` to renew all your certificates automatically.
 
 ## Shutting off HTTPS
 
@@ -360,4 +404,3 @@ Killed support for `tlsv1` as it is insecure.
 0.1.1, 0.1.2: `reset` command works.
 
 0.1.0: initial release.
-
