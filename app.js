@@ -56,7 +56,8 @@ var options = {
   'static': 'string',
   'autoindex': 'boolean',
   'https': 'boolean',
-  'redirect-to-https': 'boolean'
+  'redirect-to-https': 'boolean',
+  'https-upstream': 'boolean'
 };
 
 var parsers = {
