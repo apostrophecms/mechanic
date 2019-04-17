@@ -129,6 +129,16 @@ mechanic update mysite --backends=192.168.1.2:3000,192.168.1.2:3001,192.168.1.3:
 
 *You can use hostnames too.*
 
+### Secure backends
+
+If you're proxying to a remote server, it's a good idea to enable HTTPS there too, so your connection is secure end-to-end. If you use the `https-upstream` option, nginx will make requests to your backends using SSL.
+
+```
+mechanic update mysite --https-upstream
+```
+
+Note that this can introduce a significant performance overhead, as nginx will need to validate certificates and encrypt the connection with the backend.
+
 ## Secure sites
 
 Now we've added ecommerce and we need a secure site:
