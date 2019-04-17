@@ -2,7 +2,7 @@
 
 ## Purpose
 
-[nginx](http://nginx.org) is a popular reverse proxy server among node developers. It's common to set up one or more node apps listening on high-numbered ports and use nginx virtual hosting and reverse proxy features to pass traffic to node. nginx can also serve static files better than node can, and it has battle-testd round-robin load balancing features.
+[nginx](http://nginx.org) is a popular reverse proxy server among node developers. It's common to set up one or more node apps listening on high-numbered ports and use nginx virtual hosting and reverse proxy features to pass traffic to node. nginx can also serve static files better than node can, and it has battle-tested round-robin load balancing features.
 
 We've boiled down our favorite configuration recipes for nginx to a simple utility that takes care of spinning up and shutting down proxies for new node sites on a server. It can also handle load balancing, canonical redirects, direct delivery of static files and https configuration. It takes the place of manually editing nginx configuration files.
 
