@@ -1,11 +1,11 @@
-var argv = require('boring')();
-var _ = require('lodash');
-var fs = require('fs');
-var shelljs = require('shelljs');
-var resolve = require('path').resolve;
-var shellEscape = require('shell-escape');
+const argv = require('boring')();
+const _ = require('lodash');
+const fs = require('fs');
+const shelljs = require('shelljs');
+const resolve = require('path').resolve;
+const shellEscape = require('shell-escape');
 
-var dataFile;
+let dataFile;
 if (argv.data) {
   dataFile = argv.data;
   delete argv.data;
@@ -20,10 +20,9 @@ if (argv.data) {
   }
 }
 
+let data = require('prettiest')({ json: dataFile });
 
-var data = require('prettiest')({ json: dataFile });
-
-var defaultSettings = {
+let defaultSettings = {
   conf: '/etc/nginx/conf.d',
   overrides: '/etc/nginx/mechanic-overrides',
   logs: '/var/log/nginx',
@@ -34,20 +33,20 @@ var defaultSettings = {
 _.defaults(data, { settings: {} });
 _.defaults(data.settings, defaultSettings);
 
-var settings = data.settings;
+let settings = data.settings;
 
-var nunjucks = require('nunjucks');
+const nunjucks = require('@apostrophecms/nunjucks');
 
-var command = argv._[0];
+let command = argv._[0];
 if (!command) {
   usage();
 }
 
-var aliases = {
+let aliases = {
   'backend': 'backends'
 };
 
-var options = {
+let options = {
   'host': 'string',
   'backends': 'addresses',
   'aliases': 'strings',
@@ -60,7 +59,7 @@ var options = {
   'https-upstream': 'boolean'
 };
 
-var parsers = {
+let parsers = {
   string: function(s) {
     return s.trim();
   },
@@ -74,11 +73,11 @@ var parsers = {
   },
   addresses: function(s) {
     return _.map(parsers.strings(s), function(s) {
-      var matches = s.match(/^(([^:]+)\:)?(\d+)$/);
+      let matches = s.match(/^(([^:]+)\:)?(\d+)$/);
       if (!matches) {
         throw 'A list of port numbers and/or address:port combinations is expected, separated by commas';
       }
-      var host, port;
+      let host, port;
       if (matches[2]) {
         host = matches[2];
       } else {
@@ -96,10 +95,10 @@ var parsers = {
   },
   // Have a feeling we'll use this soon
   keyValue: function(s) {
-    var s = parsers.string(s);
-    var o = {};
+    let s = parsers.string(s);
+    let o = {};
     _.each(s, function(v) {
-      var matches = v.match(/^([^:]+):(.*)$/);
+      let matches = v.match(/^([^:]+):(.*)$/);
       if (!matches) {
         throw 'Key-value pairs expected, like this: key:value,key:value';
       }
@@ -109,7 +108,7 @@ var parsers = {
   }
 };
 
-var stringifiers = {
+let stringifiers = {
   string: function(s) {
     return s;
   },
@@ -166,8 +165,8 @@ function set() {
   if (argv._.length !== 3) {
     usage("The \"set\" command requires two parameters:\n\nmechanic set key value");
   }
-  var key = argv._[1];
-  var value = argv._[2];
+  let key = argv._[1];
+  let value = argv._[2];
   data.settings[argv._[1]] = argv._[2];
   go();
 }
@@ -177,8 +176,8 @@ function update(add) {
     usage('shortname argument is required; also --host');
   }
 
-  var shortname = argv._[1];
-  var site;
+  let shortname = argv._[1];
+  let site;
 
   if (add) {
     if (findSite(shortname)) {
@@ -222,9 +221,9 @@ function remove() {
     usage();
   }
 
-  var shortname = argv._[1];
+  let shortname = argv._[1];
 
-  var found = false;
+  let found = false;
   data.sites = _.filter(data.sites || [], function(site) {
     if (site.shortname === shortname) {
       found = true;
@@ -288,11 +287,11 @@ function go() {
     delete site._index;
   });
 
-  var sites = _.filter(data.sites, validSiteFilter);
+  let sites = _.filter(data.sites, validSiteFilter);
 
-  var template = fs.readFileSync(settings.template || (__dirname + '/template.conf'), 'utf8');
+  let template = fs.readFileSync(settings.template || (__dirname + '/template.conf'), 'utf8');
 
-  var output = nunjucks.renderString(template, {
+  let output = nunjucks.renderString(template, {
     sites: sites,
     settings: settings
   });
@@ -300,7 +299,7 @@ function go() {
   // Set up include-able files to allow
   // easy customizations
   _.each(sites, function(site) {
-    var folder = settings.overrides;
+    let folder = settings.overrides;
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder);
     }
@@ -308,9 +307,9 @@ function go() {
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder);
     }
-    var files = [ 'location', 'proxy', 'server', 'top' ];
+    let files = [ 'location', 'proxy', 'server', 'top' ];
     _.each(files, function(file) {
-      var filename = folder + '/' + file;
+      let filename = folder + '/' + file;
       if (!fs.existsSync(filename)) {
         fs.writeFileSync(filename, '# Your custom nginx directives go here\n');
       }
@@ -320,7 +319,7 @@ function go() {
   fs.writeFileSync(settings.conf + '/mechanic.conf', output);
 
   if (settings.restart !== false) {
-    var restart = settings.restart || 'service nginx reload';
+    let restart = settings.restart || 'service nginx reload';
     if (shelljs.exec(restart).code !== 0) {
       console.error('ERROR: unable to reload nginx configuration!');
       process.exit(3);
@@ -347,7 +346,7 @@ function list()
     }
   });
   _.each(data.sites, function(site) {
-    var words = [ 'mechanic', 'add', site.shortname ];
+    let words = [ 'mechanic', 'add', site.shortname ];
     _.each(site, function(val, key) {
       if (_.has(stringifiers, options[key])) {
         words.push('--' + key + '=' + stringifiers[options[key]](val));

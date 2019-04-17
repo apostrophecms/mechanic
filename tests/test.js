@@ -10,6 +10,10 @@ if (fs.existsSync(__dirname + '/test.json')) {
   fs.unlinkSync(__dirname + '/test.json');
 }
 
+if (!fs.existsSync(__dirname + '/nginx')) {
+  fs.mkdirSync(__dirname + '/nginx');
+}
+
 fs.writeFileSync(__dirname + '/nginx/nginx.conf', '# test conf file');
 
 fs.writeFileSync(__dirname + '/test.json', fs.readFileSync(__dirname + '/initial-db.json', 'utf8'));
