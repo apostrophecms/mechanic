@@ -95,7 +95,7 @@ let parsers = {
   },
   // Have a feeling we'll use this soon
   keyValue: function(s) {
-    let s = parsers.string(s);
+    s = parsers.string(s);
     let o = {};
     _.each(s, function(v) {
       let matches = v.match(/^([^:]+):(.*)$/);
