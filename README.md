@@ -335,6 +335,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+1.2.1: fixed bug introduced in 1.2.0 with the use of `let` to redeclare a variable that is already a function argument.
+
 1.2.0: `--https-upstream` option added; when present connections to backends are made via `https` rather than `http`. This is useful when the upstream servers are remote and not just next door on a secured local network. Of course, there is a performance impact. Thanks to Kevin S. (t3rminus) for this contribution.
 
 1.1.0: sites set `--default=true` are always moved to the end of the list, and the end of the generated nginx configuration file. This is helpful when reading `mechanic list` and also  works around an issue we've seen in at least one case where nginx did not appear to honor its usual rule that a `server_name` match should always beat `default_server`.
