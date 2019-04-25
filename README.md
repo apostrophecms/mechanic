@@ -335,6 +335,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+1.2.2: added config for running tests on CircleCI
+
 1.2.1: fixed bug introduced in 1.2.0 with the use of `let` to redeclare a variable that is already a function argument.
 
 1.2.0: `--https-upstream` option added; when present connections to backends are made via `https` rather than `http`. This is useful when the upstream servers are remote and not just next door on a secured local network. Of course, there is a performance impact. Thanks to Kevin S. (t3rminus) for this contribution.
@@ -374,4 +376,3 @@ Killed support for `tlsv1` as it is insecure.
 0.1.1, 0.1.2: `reset` command works.
 
 0.1.0: initial release.
-
