@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/punkave/mechanic/tree/master.svg?style=svg)](https://circleci.com/gh/punkave/mechanic/tree/master)
+
 # mechanic
 
 ## Purpose
