@@ -337,7 +337,9 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
-1.2.2: added config for running tests on CircleCI
+1.2.3: depend on `prettiest` 1.1.0 or better, as a way of making it hopefully easier to install by transitively depending on a newer version of `fs-ext`.
+
+1.2.2: added config for running tests on CircleCI.
 
 1.2.1: fixed bug introduced in 1.2.0 with the use of `let` to redeclare a variable that is already a function argument.
 
