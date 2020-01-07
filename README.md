@@ -337,6 +337,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+1.2.4: if `https` and `redirect-to-https` are active for the site, redirect straight to https when canonicalizing, avoid an extra http hop which was generating security scan complaints and adding a touch of latency.
+
 1.2.3: depend on `prettiest` 1.1.0 or better, as a way of making it hopefully easier to install by transitively depending on a newer version of `fs-ext`.
 
 1.2.2: added config for running tests on CircleCI.
