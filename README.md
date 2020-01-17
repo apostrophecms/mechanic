@@ -261,9 +261,9 @@ If you don't want to customize our template, check out the convenience override 
 
 `top` is loaded before any of mechanic's directives for that site. Use it when nothing else fits.
 
-`server` is included inside the `server` block for the site, just before the `location` block, when `redirect-to-https` is not in effect. it is a good place to change a setting like `client_max_body_size` or `access_log`.
+`server` is included inside the `server` block for the site, just before the `location` block, when `redirect-to-https` is not in effect. It is a good place to change a setting like `access_log`.
 
-`location` is included inside the `location` block, and is a good place to add something like CORS headers for static font files.
+`location` is included inside the `location` block, and is a good place to add something like CORS headers for static font files. It is also a good place to change the `client_max_body_size` directive.
 
 `proxy` is loaded inside the proxy server configuration and is ideal if you need to override mechanic's proxy settings.
 
