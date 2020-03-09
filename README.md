@@ -337,6 +337,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+1.3.0: optional `--websockets` flag to enable support for websockets in the app behind the proxy. Thanks to Ahmet Simsek.
+
 1.2.5: documentation update indicating that `client_max_body_size` works best in the `location` override file. Thanks to Bob Clewell of P'unk Avenue for this contribution.
 
 1.2.4: if `https` and `redirect-to-https` are active for the site, redirect straight to https when canonicalizing, avoid an extra http hop which was generating security scan complaints and adding a touch of latency.
