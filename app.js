@@ -56,7 +56,8 @@ let options = {
   'autoindex': 'boolean',
   'https': 'boolean',
   'redirect-to-https': 'boolean',
-  'https-upstream': 'boolean'
+  'https-upstream': 'boolean',
+  'websocket': 'boolean'
 };
 
 let parsers = {
