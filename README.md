@@ -236,6 +236,18 @@ By default, `mechanic` tells nginx to accept traffic on all IP addresses assigne
 
 *If you reset this setting to `*` make sure you quote it, so the shell doesn't give you a list of filenames.*
 
+### Enabling websockets
+
+By default, nginx does not proxy websockets. You can enable this by passing the `--websockets` flag:
+
+```
+mechanic update mysite --websockets
+```
+
+This [enables websockets proxying per the nginx documentation](http://nginx.org/en/docs/http/websocket.html) by setting the HTTP version for the proxy to 1.1 and setting the Upgrade header. 
+
+As with other boolean flags you can turn this off again with `--websockets=false`.
+
 ### template: custom nginx template file
 
 ```javascript
@@ -336,6 +348,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 `mechanic` was created to facilitate our work at [P'unk Avenue](http://punkave.com). We use it to host sites powered by [ApostropheCMS](https://apostrophecms.org).
 
 ## Changelog
+
+1.3.1: document `--websockets` flag. No code changes.
 
 1.3.0: optional `--websockets` flag to enable support for websockets in the app behind the proxy. Thanks to Ahmet Simsek.
 
