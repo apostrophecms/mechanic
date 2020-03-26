@@ -8,19 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/punkave/mechanic"
+    "url": "https://github.com/apostrophecms/mechanic"
   },
   "keywords": [
     "nginx",
     "apostrophe",
     "reverse proxy"
   ],
-  "author": "P'unk Avenue LLC",
+  "author": "Apostrophe Technologies, Inc.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/punkave/mechanic/issues"
+    "url": "https://github.com/apostrophecms/mechanic/issues"
   },
-  "homepage": "https://github.com/punkave/mechanic",
+  "homepage": "https://github.com/apostrophecms/mechanic",
   "dependencies": {
     "boring": "^0.1.0",
     "lodash": "^4.0.0",

@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/punkave/mechanic/tree/master.svg?style=svg)](https://circleci.com/gh/punkave/mechanic/tree/master)
+[![CircleCI](https://circleci.com/gh/apostrophecms/mechanic/tree/master.svg?style=svg)](https://circleci.com/gh/apostrophecms/mechanic/tree/master)
 
 # mechanic
 
@@ -244,7 +244,7 @@ By default, nginx does not proxy websockets. You can enable this by passing the 
 mechanic update mysite --websockets
 ```
 
-This [enables websockets proxying per the nginx documentation](http://nginx.org/en/docs/http/websocket.html) by setting the HTTP version for the proxy to 1.1 and setting the Upgrade header. 
+This [enables websockets proxying per the nginx documentation](http://nginx.org/en/docs/http/websocket.html) by setting the HTTP version for the proxy to 1.1 and setting the Upgrade header.
 
 As with other boolean flags you can turn this off again with `--websockets=false`.
 
