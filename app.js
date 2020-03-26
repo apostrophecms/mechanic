@@ -91,7 +91,8 @@ let parsers = {
     return s.toString().split(/\s*,\s*/);
   },
   boolean: function(s) {
-    return (s === 'true') || (s === 'on') || (s === 1);
+    // eslint-disable-next-line eqeqeq
+    return (s === 'true') || (s === 'on') || (s == 1);
   },
   // Have a feeling we'll use this soon
   keyValue: function(s) {
