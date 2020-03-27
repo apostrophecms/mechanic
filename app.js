@@ -15,7 +15,7 @@ if (argv.data) {
   // that don't need a directory." But create it if it's
   // somehow missing (Mac for instance).
   if (!fs.existsSync('/var/lib/misc')) {
-    fs.mkdirSync('/var/lib/misc', 700);
+    fs.mkdirSync('/var/lib/misc', 0o700);
   }
 }
 
