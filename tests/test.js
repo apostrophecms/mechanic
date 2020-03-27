@@ -123,7 +123,7 @@ expect({
       "host": "site2.com",
       "backends": [ 'localhost:3001' ],
       "https": true
-    },
+    }
   ]
 }, 'Test failed: adding two sites with https should store the right JSON');
 
@@ -151,7 +151,7 @@ expect({
       "https": true,
       "redirect-to-https": true,
       "websocket": true
-    },
+    }
   ]
 }, 'Test failed: redirect-to-https should add the right JSON');
 
@@ -197,7 +197,7 @@ expect({
       "host": "defaultsite.com",
       "default": true,
       "backends": [ 'localhost:3000' ]
-    },
+    }
   ]
 }, 'Test failed: default site should always wind up at the end of the list');
 

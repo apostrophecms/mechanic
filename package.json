@@ -4,23 +4,23 @@
   "description": "Manage nginx as a reverse proxy for node apps. Written with the Apostrophe CMS in mind.",
   "main": "app.js",
   "scripts": {
-    "test": "cd tests && node test"
+    "test": "npx eslint . && cd tests && node test"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/punkave/mechanic"
+    "url": "https://github.com/apostrophecms/mechanic"
   },
   "keywords": [
     "nginx",
     "apostrophe",
     "reverse proxy"
   ],
-  "author": "P'unk Avenue LLC",
+  "author": "Apostrophe Technologies, Inc.",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/punkave/mechanic/issues"
+    "url": "https://github.com/apostrophecms/mechanic/issues"
   },
-  "homepage": "https://github.com/punkave/mechanic",
+  "homepage": "https://github.com/apostrophecms/mechanic",
   "dependencies": {
     "boring": "^0.1.0",
     "lodash": "^4.0.0",
@@ -28,6 +28,15 @@
     "prettiest": "^1.1.0",
     "shell-escape": "^0.2.0",
     "shelljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^4.0.0",
+    "eslint-config-apostrophe": "^3.1.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0"
   },
   "bin": {
     "mechanic": "./bin/mechanic"

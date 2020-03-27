@@ -2,7 +2,6 @@ const argv = require('boring')();
 const _ = require('lodash');
 const fs = require('fs');
 const shelljs = require('shelljs');
-const resolve = require('path').resolve;
 const shellEscape = require('shell-escape');
 
 let dataFile;
@@ -16,7 +15,7 @@ if (argv.data) {
   // that don't need a directory." But create it if it's
   // somehow missing (Mac for instance).
   if (!fs.existsSync('/var/lib/misc')) {
-    fs.mkdirSync('/var/lib/misc', 0700);
+    fs.mkdirSync('/var/lib/misc', 0o700);
   }
 }
 
@@ -74,7 +73,7 @@ let parsers = {
   },
   addresses: function(s) {
     return _.map(parsers.strings(s), function(s) {
-      let matches = s.match(/^(([^:]+)\:)?(\d+)$/);
+      let matches = s.match(/^(([^:]+):)?(\d+)$/);
       if (!matches) {
         throw 'A list of port numbers and/or address:port combinations is expected, separated by commas';
       }
@@ -89,9 +88,10 @@ let parsers = {
     });
   },
   strings: function(s) {
-    return s.toString().split(/\s*\,\s*/);
+    return s.toString().split(/\s*,\s*/);
   },
   boolean: function(s) {
+    // eslint-disable-next-line eqeqeq
     return (s === 'true') || (s === 'on') || (s == 1);
   },
   // Have a feeling we'll use this soon
@@ -120,11 +120,11 @@ let stringifiers = {
     return s.join(',');
   },
   boolean: function(s) {
-    return s ? 'true' : 'false'
+    return s ? 'true' : 'false';
   },
   keyValue: function(o) {
     return _.map(o, function(v, k) {
-      return k + ':' + v;r
+      return k + ':' + v;
     }).join(',');
   },
   addresses: function(s) {
@@ -166,8 +166,7 @@ function set() {
   if (argv._.length !== 3) {
     usage("The \"set\" command requires two parameters:\n\nmechanic set key value");
   }
-  let key = argv._[1];
-  let value = argv._[2];
+
   data.settings[argv._[1]] = argv._[2];
   go();
 }
@@ -248,7 +247,7 @@ function refresh() {
 
 function validSiteFilter(site) {
   if ((!(site.backends && site.backends.length)) && (!site.static)) {
-    console.log('WARNING: skipping ' + site.shortname + ' because no backends have been specified (hint: --backends=portnumber)');
+    console.warn('WARNING: skipping ' + site.shortname + ' because no backends have been specified (hint: --backends=portnumber)');
     return false;
   }
   return true;
@@ -332,18 +331,16 @@ function go() {
   process.exit(0);
 }
 
-function findSite(shortname)
-{
+function findSite(shortname) {
   return _.find(data.sites, function(site) {
     return site.shortname === shortname;
   });
 }
 
-function list()
-{
+function list() {
   _.each(data.settings, function(val, key) {
     if (val !== defaultSettings[key]) {
-      console.log(shellEscape([ 'mechanic', 'set', key, val ]));
+      console.info(shellEscape([ 'mechanic', 'set', key, val ]));
     }
   });
   _.each(data.sites, function(site) {
@@ -353,12 +350,11 @@ function list()
         words.push('--' + key + '=' + stringifiers[options[key]](val));
       }
     });
-    console.log(shellEscape(words));
+    console.info(shellEscape(words));
   });
 }
 
-function reset()
-{
+function reset() {
   data.settings = defaultSettings;
   data.sites = [];
   go();
