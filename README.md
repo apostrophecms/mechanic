@@ -349,6 +349,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+1.3.2: Adds JS linting, some code clean up.
+
 1.3.1: document `--websockets` flag. No code changes.
 
 1.3.0: optional `--websockets` flag to enable support for websockets in the app behind the proxy. Thanks to Ahmet Simsek.
