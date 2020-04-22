@@ -56,7 +56,7 @@ let options = {
   'https': 'boolean',
   'redirect-to-https': 'boolean',
   'https-upstream': 'boolean',
-  'websocket': 'boolean'
+  'websockets': 'boolean'
 };
 
 let parsers = {
