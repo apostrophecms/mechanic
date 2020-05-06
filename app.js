@@ -56,6 +56,7 @@ let options = {
   'https': 'boolean',
   'redirect-to-https': 'boolean',
   'https-upstream': 'boolean',
+  'websocket': 'boolean', // Included for accidental BC coverage.
   'websockets': 'boolean'
 };
 
@@ -340,7 +341,7 @@ function findSite(shortname) {
 function list() {
   _.each(data.settings, function(val, key) {
     if (val !== defaultSettings[key]) {
-      console.info(shellEscape([ 'mechanic', 'set', key, val ]));
+      console.info(shellEscape([ 'mechanic', 'set', key, val ]), '\n');
     }
   });
   _.each(data.sites, function(site) {
@@ -350,7 +351,7 @@ function list() {
         words.push('--' + key + '=' + stringifiers[options[key]](val));
       }
     });
-    console.info(shellEscape(words));
+    console.info(shellEscape(words), '\n');
   });
 }
 

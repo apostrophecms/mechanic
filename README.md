@@ -349,6 +349,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 
 ## Changelog
 
+1.3.3 Corrects a typo in the `--websockets` option that had required the singular form of the word. Spaces out entries when using `mechanic list` to view current sites.
+
 1.3.2: Adds JS linting, some code clean up.
 
 1.3.1: document `--websockets` flag. No code changes.
