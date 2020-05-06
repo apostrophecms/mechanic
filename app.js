@@ -340,7 +340,7 @@ function findSite(shortname) {
 function list() {
   _.each(data.settings, function(val, key) {
     if (val !== defaultSettings[key]) {
-      console.info(shellEscape([ 'mechanic', 'set', key, val, '\n' ]));
+      console.info(shellEscape([ 'mechanic', 'set', key, val ]), '\n');
     }
   });
   _.each(data.sites, function(site) {
@@ -350,8 +350,7 @@ function list() {
         words.push('--' + key + '=' + stringifiers[options[key]](val));
       }
     });
-    words.push('\n');
-    console.info(shellEscape(words));
+    console.info(shellEscape(words), '\n');
   });
 }
 
