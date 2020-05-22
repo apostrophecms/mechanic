@@ -57,7 +57,9 @@ let options = {
   'redirect-to-https': 'boolean',
   'https-upstream': 'boolean',
   'websocket': 'boolean', // Included for accidental BC coverage.
-  'websockets': 'boolean'
+  'websockets': 'boolean',
+  'redirect-all': 'string',
+  'redirect-full': 'boolean'
 };
 
 let parsers = {
@@ -207,6 +209,11 @@ function update(add) {
       usage('Unrecognized option: ' + key);
     }
     try {
+      if (key === 'redirect') {
+        delete site['redirect-full'];
+      } else if (key === 'redirect-full') {
+        delete site['redirect'];
+      }
       site[key] = parsers[options[key]](val);
     } catch (e) {
       console.error(e);

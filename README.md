@@ -161,6 +161,22 @@ Next we decide we want the site to be secure all the time, redirecting any traff
 mechanic update mysite --https=true --redirect-to-https=true
 ```
 
+## Redirecting to another site
+
+We can also redirect all traffic to a different site:
+
+```
+mechanic update mysite --redirect=https://example.com
+```
+
+The above redirects 100% of traffic to the same place. To instead append the rest of the original URL to the redirect, use:
+
+```
+mechanic update mysite --redirect-full=https://example.com
+```
+
+Setting `--redirect` clears `--redirect-full`, and vice versa.
+
 ## Shutting off HTTPS
 
 Now we've decided we don't want ecommerce anymore. Let's shut that off:
@@ -348,6 +364,8 @@ If necessary `mechanic` will create `/var/lib/misc`.
 `mechanic` was created to facilitate our work at [P'unk Avenue](http://punkave.com). We use it to host sites powered by [ApostropheCMS](https://apostrophecms.org).
 
 ## Changelog
+
+1.4.0 Added the `--redirect=https://example.com` and `--redirect-full=https://example.com` options, to redirect all traffic to another site. If you want the rest of the URL after the hostname to be appended when redirecting, use `--redirect-full`. To send everything to the same place, use `--redirect`.
 
 1.3.3 Corrects a typo in the `--websockets` option that had required the singular form of the word. Spaces out entries when using `mechanic list` to view current sites.
 
