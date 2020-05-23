@@ -58,7 +58,7 @@ let options = {
   'https-upstream': 'boolean',
   'websocket': 'boolean', // Included for accidental BC coverage.
   'websockets': 'boolean',
-  'redirect-all': 'string',
+  'redirect': 'string',
   'redirect-full': 'boolean'
 };
 
