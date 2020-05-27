@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/apostrophecms/mechanic",
   "dependencies": {
+    "@apostrophecms/nunjucks": "^2.5.4",
     "boring": "^0.1.0",
     "lodash": "^4.0.0",
-    "@apostrophecms/nunjucks": "^2.0.0",
     "prettiest": "^1.1.0",
     "shell-escape": "^0.2.0",
     "shelljs": "^0.3.0"
