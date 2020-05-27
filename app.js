@@ -58,8 +58,8 @@ let options = {
   'https-upstream': 'boolean',
   'websocket': 'boolean', // Included for accidental BC coverage.
   'websockets': 'boolean',
-  'redirect-all': 'string',
-  'redirect-full': 'boolean'
+  'redirect': 'string',
+  'redirect-full': 'string'
 };
 
 let parsers = {
@@ -254,7 +254,7 @@ function refresh() {
 }
 
 function validSiteFilter(site) {
-  if ((!(site.backends && site.backends.length)) && (!site.static)) {
+  if ((!(site.backends && site.backends.length)) && (!site.static) && (!site.redirect) && (!site['redirect-full'])) {
     console.warn('WARNING: skipping ' + site.shortname + ' because no backends have been specified (hint: --backends=portnumber)');
     return false;
   }
