@@ -163,13 +163,13 @@ mechanic update mysite --https=true --redirect-to-https=true
 
 ## Redirecting to another site
 
-We can also redirect all traffic to a different site:
+We can also redirect all traffic to a different site. To redirect 100% of the traffic to one specific URL, use `--redirect`:
 
 ```
 mechanic update mysite --redirect=https://example.com
 ```
 
-The above redirects 100% of traffic to the same place. To instead append the rest of the original URL to the redirect, use:
+To instead append the rest of the original URL to a redirected domain, use `--redirect-full`:
 
 ```
 mechanic update mysite --redirect-full=https://example.com
