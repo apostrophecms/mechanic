@@ -4,5 +4,4 @@ node_modules
 tests/nginx/*
 tests/test.json*
 tests/mechanic-overrides
-package-lock.json
 .idea
