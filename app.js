@@ -59,7 +59,8 @@ let options = {
   'websocket': 'boolean', // Included for accidental BC coverage.
   'websockets': 'boolean',
   'redirect': 'string',
-  'redirect-full': 'string'
+  'redirect-full': 'string',
+  'permanent': 'boolean'
 };
 
 let parsers = {
