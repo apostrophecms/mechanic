@@ -1,7 +1,7 @@
 # Changelog
 
 ## 1.5.0
-Adds http/2 support for https requests. Adds a permanent option to turn default temporary redirects (302) into permanent (301) by using `--permanent=true`. This can be undone by using `--permanent=false`.
+Adds http/2 support for https requests by using `mechanic set http2 true`. Adds a permanent option to turn default temporary redirects (302) into permanent (301) by using `--permanent=true`. This can be undone by using `--permanent=false`.
 
 ## 1.4.0
 Added the `--redirect=https://example.com` and `--redirect-full=https://example.com` options, to redirect all traffic to another site. If you want the rest of the URL after the hostname to be appended when redirecting, use `--redirect-full`. To send everything to the same place, use `--redirect`.

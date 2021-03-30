@@ -177,6 +177,22 @@ mechanic update mysite --redirect-full=https://example.com
 
 Setting `--redirect` clears `--redirect-full`, and vice versa.
 
+## Enabling HTTP/2
+
+We can enable HTTP/2 by setting http2 to true:
+
+```
+mechanic set true
+```
+
+## Disabling HTTP/2
+
+We can disable HTTP/2 by setting http2 to an empty string:
+
+```
+mechanic set ''
+```
+
 ## Shutting off HTTPS
 
 Now we've decided we don't want ecommerce anymore. Let's shut that off:
