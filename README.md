@@ -193,6 +193,14 @@ We can disable HTTP/2 by setting http2 to an empty string:
 mechanic set ''
 ```
 
+## Permanent and Temporary Redirects
+
+All redirects are temporary by default. To make redirects permanent (301), use `--permanent=true`. To go back to a temporary (302) redirect, use `--permanent=false`.
+
+```
+mechanic update mysite --permanent=true
+```
+
 ## Shutting off HTTPS
 
 Now we've decided we don't want ecommerce anymore. Let's shut that off:
