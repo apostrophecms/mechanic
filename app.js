@@ -54,6 +54,7 @@ let options = {
   'static': 'string',
   'autoindex': 'boolean',
   'https': 'boolean',
+  'http2': 'boolean',
   'redirect-to-https': 'boolean',
   'https-upstream': 'boolean',
   'websocket': 'boolean', // Included for accidental BC coverage.
