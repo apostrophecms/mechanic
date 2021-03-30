@@ -34,7 +34,7 @@ Go nuts.
 
 Let's add a single proxy that talks to one node process, which is listening on port 3000 on the same server (`localhost`):
 
-*All commands must be run as root.*
+_All commands must be run as root._
 
 ## Adding a site
 
@@ -42,7 +42,7 @@ Let's add a single proxy that talks to one node process, which is listening on p
 mechanic add mysite --host=mysite.com --backends=3000
 ```
 
-Replace `mysite` with a good "shortname" for *your* site— letters and numbers and underscores only, no leading digits.
+Replace `mysite` with a good "shortname" for _your_ site— letters and numbers and underscores only, no leading digits.
 
 `mechanic` will reconfigure and restart `nginx` as you go along and remember everything you've asked it to include.
 
@@ -83,7 +83,7 @@ Let's score a big performance win by serving our static files directly with ngin
 mechanic update mysite --static=/opt/stagecoach/apps/mysite/current/public
 ```
 
-*Browsers will cache the static files for up to 7 days. That's a good thing, but if you use this feature make sure any dynamically generated files have new filenames on each new deployment.*
+_Browsers will cache the static files for up to 7 days. That's a good thing, but if you use this feature make sure any dynamically generated files have new filenames on each new deployment._
 
 ## Serving `index.html` for bare directories
 
@@ -129,7 +129,7 @@ This time we want to load-balance between two separate back-end servers, each of
 mechanic update mysite --backends=192.168.1.2:3000,192.168.1.2:3001,192.168.1.3:3000,192.168.1.3:3001
 ```
 
-*You can use hostnames too.*
+_You can use hostnames too._
 
 ### Secure backends
 
@@ -176,6 +176,22 @@ mechanic update mysite --redirect-full=https://example.com
 ```
 
 Setting `--redirect` clears `--redirect-full`, and vice versa.
+
+## Enabling HTTP/2
+
+We can enable HTTP/2 by setting http2 to true:
+
+```
+mechanic set true
+```
+
+## Disabling HTTP/2
+
+We can disable HTTP/2 by setting http2 to an empty string:
+
+```
+mechanic set ''
+```
 
 ## Permanent and Temporary Redirects
 
@@ -239,7 +255,7 @@ mechanic set restart "nginx -s reload"
 
 The command to restart `nginx`.
 
-*Don't forget the quotes if spaces are present.* That's just how the shell works, but it bears repeating.
+_Don't forget the quotes if spaces are present._ That's just how the shell works, but it bears repeating.
 
 ### logs: webserver log file folder
 
@@ -258,7 +274,7 @@ mechanic set bind "*"
 
 By default, `mechanic` tells nginx to accept traffic on all IP addresses assigned to the server. (`*` means "everything.") If this isn't what you want, set a specific ip address with `bind`.
 
-*If you reset this setting to `*` make sure you quote it, so the shell doesn't give you a list of filenames.*
+_If you reset this setting to `_` make sure you quote it, so the shell doesn't give you a list of filenames.\*
 
 ### Enabling websockets
 
@@ -326,7 +342,7 @@ To completely reset mechanic, throwing away everything it knows:
 mechanic reset
 ```
 
-*Warning:* like it says, this will completely reset your configuration and forget everything you've done. Don't do that unless you really want to.
+_Warning:_ like it says, this will completely reset your configuration and forget everything you've done. Don't do that unless you really want to.
 
 ## Listing your configuration settings
 
@@ -370,63 +386,3 @@ If necessary `mechanic` will create `/var/lib/misc`.
 ## Credits
 
 `mechanic` was created to facilitate our work at [P'unk Avenue](http://punkave.com). We use it to host sites powered by [ApostropheCMS](https://apostrophecms.org).
-
-## Changelog
-
-1.4.0 Added the `--redirect=https://example.com` and `--redirect-full=https://example.com` options, to redirect all traffic to another site. If you want the rest of the URL after the hostname to be appended when redirecting, use `--redirect-full`. To send everything to the same place, use `--redirect`.
-
-1.3.3 Corrects a typo in the `--websockets` option that had required the singular form of the word. Spaces out entries when using `mechanic list` to view current sites.
-
-1.3.2: Adds JS linting, some code clean up.
-
-1.3.1: document `--websockets` flag. No code changes.
-
-1.3.0: optional `--websockets` flag to enable support for websockets in the app behind the proxy. Thanks to Ahmet Simsek.
-
-1.2.5: documentation update indicating that `client_max_body_size` works best in the `location` override file. Thanks to Bob Clewell of P'unk Avenue for this contribution.
-
-1.2.4: if `https` and `redirect-to-https` are active for the site, redirect straight to https when canonicalizing, avoid an extra http hop which was generating security scan complaints and adding a touch of latency.
-
-1.2.3: depend on `prettiest` 1.1.0 or better, as a way of making it hopefully easier to install by transitively depending on a newer version of `fs-ext`.
-
-1.2.2: added config for running tests on CircleCI.
-
-1.2.1: fixed bug introduced in 1.2.0 with the use of `let` to redeclare a variable that is already a function argument.
-
-1.2.0: `--https-upstream` option added; when present connections to backends are made via `https` rather than `http`. This is useful when the upstream servers are remote and not just next door on a secured local network. Of course, there is a performance impact. Thanks to Kevin S. (t3rminus) for this contribution.
-
-1.1.0: sites set `--default=true` are always moved to the end of the list, and the end of the generated nginx configuration file. This is helpful when reading `mechanic list` and also  works around an issue we've seen in at least one case where nginx did not appear to honor its usual rule that a `server_name` match should always beat `default_server`.
-
-1.0.2: Canonicalization also applies to https. Of course it won't magically
-work for aliases your certificate doesn't cover, but it will work for
-www to bare domain or vice versa, or whatever your certificate does include.
-
-1.0.1: Moved standard gzip directives to the start of the server block. Otherwise responses proxied through to node are not compressed. A large performance win.
-
-1.0.0: Officially stable and following semantic versioning from here on out. Also added `top` and `server` override files and the `--index` option, and made `backends` optional when `static` is present. This allows the use of mechanic to set up very simple static websites.
-
-0.1.13—0.1.14: pass the `X-Forwarded-Proto` header for compatibility with the `secure` flag for session cookies, provided that Express is configured to trust the first proxy.
-
-Killed support for `tlsv1` as it is insecure.
-
-0.1.12: killed support for `sslv3` as it is insecure.
-
-0.1.11: parse `host:port` correctly with the `--backends` option.
-
-0.1.10: the `boring` dependency was missing, this is fixed.
-
-0.1.9: Accept `backend` as an alias for `backends`. Reject invalid hyphenated options passed to `add` and `update`, as their absence usually means you've mistyped something important. Don't crash nginx if there are no backends, just skip that site and print a warning. Use [boring](https://www.npmjs.com/package/boring) instead of `yargs`.
-
-0.1.8: load convenience overrides from suitably named nginx configuration files.
-
-0.1.7: set the ssl flag properly for nginx in the listen statement.
-
-0.1.6: look in the documented place for SSL certificates (/etc/nginx/certs).
-
-0.1.5: don't try to reject invalid arguments, as yargs helpfully introduces camel-cased versions of hyphenated arguments, causing false positives and breaking our hyphenated options. This isn't great; we should find out how to disable that behavior in yargs.
-
-0.1.3: corrected documentation for Apache fallback strategy.
-
-0.1.1, 0.1.2: `reset` command works.
-
-0.1.0: initial release.
