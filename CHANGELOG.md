@@ -1,7 +1,7 @@
 # Changelog
 
-## 1.5.1
-Adds support for TLS 1.3 and removes support for TLS 1.1.
+## 1.6.0
+Adds support for TLS 1.3 and removes support for TLS 1.1, for security reasons.
 
 ## 1.5.0
 Adds http/2 support for https requests by using `mechanic set http2 true`. Adds a permanent option to turn default temporary redirects (302) into permanent (301) by using `--permanent=true`. This can be undone by using `--permanent=false`.
