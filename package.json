@@ -1,6 +1,6 @@
 {
   "name": "mechanic",
-  "version": "1.5.2",
+  "version": "1.6.1",
   "description": "Manage nginx as a reverse proxy for node apps. Written with the Apostrophe CMS in mind.",
   "main": "app.js",
   "scripts": {
