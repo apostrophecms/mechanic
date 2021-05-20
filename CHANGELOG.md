@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.6.1
+Adds previous TLS update across template.
+
 ## 1.6.0
 Adds support for TLS 1.3 and removes support for TLS 1.1, for security reasons.
 
