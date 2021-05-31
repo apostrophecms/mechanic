@@ -61,7 +61,8 @@ let options = {
   'websockets': 'boolean',
   'redirect': 'string',
   'redirect-full': 'string',
-  'permanent': 'boolean'
+  'permanent': 'boolean',
+  'path': 'string'
 };
 
 let parsers = {
@@ -299,6 +300,36 @@ function go() {
 
   let sites = _.filter(data.sites, validSiteFilter);
 
+  sites = sites.map(site => {
+    site.backends.sort((b1, b2) => {
+      const p1 = pathOf(b1);
+      const p2 = pathOf(b2);
+      if (p1 < p2) {
+        return -1;
+      } else if (p2 > p1) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    site.backendGroups = [];
+    let lastPath = null;
+    let group;
+    for (const backend of site.backends) {
+      if (pathOf(backend) !== lastPath) {
+        group = {
+          path: pathOf(backend),
+          backends: [ withoutPath(backend) ]
+        };
+      } else {
+        group.backends.push(withoutPath(backend));
+      }
+      if (group.backends.length === 1) {
+        site.backendGroups.push(group);
+      }
+    }
+  });
+
   let template = fs.readFileSync(settings.template || (__dirname + '/template.conf'), 'utf8');
 
   let output = nunjucks.renderString(template, {
@@ -368,4 +399,20 @@ function reset() {
   data.settings = defaultSettings;
   data.sites = [];
   go();
+}
+
+function pathOf(backend) {
+  const components = backend.split(':');
+  const last = components[components.length - 1];
+  return (last.startsWith('/') && last) || '/';
+}
+
+function withoutPath(backend) {
+  const components = backend.split(':');
+  const last = components[components.length - 1];
+  if (last.startsWith('/')) {
+    return components.slice(0, components.length - 1).join(':');
+  } else {
+    return backend;
+  }
 }
