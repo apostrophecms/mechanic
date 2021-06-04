@@ -407,7 +407,7 @@ function reset() {
 function pathOf(backend) {
   const slashAt = backend.indexOf('/');
   if (slashAt !== -1) {
-    return backend.substring(slashAt + 1);
+    return backend.substring(slashAt);
   } else {
     return '/';
   }
