@@ -405,16 +405,18 @@ function reset() {
 }
 
 function pathOf(backend) {
-  const components = backend.split(':');
-  const last = components[components.length - 1];
-  return (last.startsWith('/') && last) || '/';
+  const slashAt = backend.indexOf('/');
+  if (slashAt !== -1) {
+    return backend.substring(slashAt + 1);
+  } else {
+    return '/';
+  }
 }
 
 function withoutPath(backend) {
-  const components = backend.split(':');
-  const last = components[components.length - 1];
-  if (last.startsWith('/')) {
-    return components.slice(0, components.length - 1).join(':');
+  const slashAt = backend.indexOf('/');
+  if (slashAt !== -1) {
+    return backend.substring(0, slashAt);
   } else {
     return backend;
   }
