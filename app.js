@@ -323,6 +323,7 @@ function go() {
           path: pathOf(backend),
           backends: [ withoutPath(backend) ]
         };
+        lastPath = pathOf(backend);
       } else {
         group.backends.push(withoutPath(backend));
       }

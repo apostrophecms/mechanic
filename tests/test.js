@@ -255,6 +255,47 @@ expect({
   ]
 }, 'Test failed: default site should always wind up at the end of the list');
 
+shelljs.exec('node ../app.js --data=./test.json update defaultsite --backends=localhost:3000,localhost:4000/ci-server');
+
+expect({
+  settings: {
+    conf: './nginx',
+    logs: './logs',
+    restart: 'touch restarted',
+    overrides: './mechanic-overrides',
+    bind: '*'
+  },
+  "sites": [
+    {
+      "shortname": "nondefaultsite",
+      "host": "nondefaultsite.com",
+      "backends": [ 'localhost:3000' ],
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3000" ]
+        }
+      ]
+    },
+    {
+      "shortname": "defaultsite",
+      "host": "defaultsite.com",
+      "default": true,
+      "backends": [ 'localhost:3000', 'localhost:4000/ci-server' ],
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3000" ]
+        },
+        {
+          "path": "/ci-server",
+          "backends": [ "localhost:4000" ]
+        }
+      ]
+    }
+  ]
+}, 'Test failed: ci server backend not listed properly');
+
 if (!fs.existsSync('./mechanic-overrides/mysite/location')) {
   console.error('location override file for mysite does not exist');
   process.exit(1);
