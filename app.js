@@ -79,18 +79,20 @@ let parsers = {
   },
   addresses: function(s) {
     return _.map(parsers.strings(s), function(s) {
-      let matches = s.match(/^(([^:]+):)?(\d+)$/);
+      let matches = s.match(/^(([^:]+):)?(\d+)(:\/.*)?$/);
       if (!matches) {
         throw 'A list of port numbers and/or address:port combinations is expected, separated by commas';
       }
-      let host, port;
+      let host, port, path;
       if (matches[2]) {
         host = matches[2];
       } else {
         host = 'localhost';
       }
       port = matches[3];
-      return host + ':' + port;
+      path = matches[4];
+      const pathString = (path != null) ? `:${path}` : '';
+      return `${host}:${port}${pathString}`;
     });
   },
   strings: function(s) {
