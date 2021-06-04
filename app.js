@@ -79,9 +79,9 @@ let parsers = {
   },
   addresses: function(s) {
     return _.map(parsers.strings(s), function(s) {
-      let matches = s.match(/^(([^:]+):)?(\d+)(:\/.*)?$/);
+      let matches = s.match(/^(([^:]+):)?(\d+)(\/.*)?$/);
       if (!matches) {
-        throw 'A list of port numbers and/or address:port combinations is expected, separated by commas';
+        throw 'A list of port numbers and/or address:port combinations with optional paths is expected, separated by commas';
       }
       let host, port, path;
       if (matches[2]) {
