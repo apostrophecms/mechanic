@@ -330,6 +330,7 @@ function go() {
         site.backendGroups.push(group);
       }
     }
+    return site;
   });
 
   let template = fs.readFileSync(settings.template || (__dirname + '/template.conf'), 'utf8');
