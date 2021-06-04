@@ -91,7 +91,7 @@ let parsers = {
       }
       port = matches[3];
       path = matches[4];
-      const pathString = (path != null) ? `:${path}` : '';
+      const pathString = (path != null) ? path : '';
       return `${host}:${port}${pathString}`;
     });
   },
