@@ -61,7 +61,8 @@ let options = {
   'websockets': 'boolean',
   'redirect': 'string',
   'redirect-full': 'string',
-  'permanent': 'boolean'
+  'permanent': 'boolean',
+  'path': 'string'
 };
 
 let parsers = {
@@ -78,18 +79,20 @@ let parsers = {
   },
   addresses: function(s) {
     return _.map(parsers.strings(s), function(s) {
-      let matches = s.match(/^(([^:]+):)?(\d+)$/);
+      let matches = s.match(/^(([^:]+):)?(\d+)(\/.*)?$/);
       if (!matches) {
-        throw 'A list of port numbers and/or address:port combinations is expected, separated by commas';
+        throw 'A list of port numbers and/or address:port combinations with optional paths is expected, separated by commas';
       }
-      let host, port;
+      let host, port, path;
       if (matches[2]) {
         host = matches[2];
       } else {
         host = 'localhost';
       }
       port = matches[3];
-      return host + ':' + port;
+      path = matches[4];
+      const pathString = (path != null) ? path : '';
+      return `${host}:${port}${pathString}`;
     });
   },
   strings: function(s) {
@@ -299,6 +302,38 @@ function go() {
 
   let sites = _.filter(data.sites, validSiteFilter);
 
+  sites = sites.map(site => {
+    site.backends.sort((b1, b2) => {
+      const p1 = pathOf(b1);
+      const p2 = pathOf(b2);
+      if (p1 < p2) {
+        return -1;
+      } else if (p2 > p1) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+    site.backendGroups = [];
+    let lastPath = null;
+    let group;
+    for (const backend of site.backends) {
+      if (pathOf(backend) !== lastPath) {
+        group = {
+          path: pathOf(backend),
+          backends: [ withoutPath(backend) ]
+        };
+        lastPath = pathOf(backend);
+      } else {
+        group.backends.push(withoutPath(backend));
+      }
+      if (group.backends.length === 1) {
+        site.backendGroups.push(group);
+      }
+    }
+    return site;
+  });
+
   let template = fs.readFileSync(settings.template || (__dirname + '/template.conf'), 'utf8');
 
   let output = nunjucks.renderString(template, {
@@ -368,4 +403,22 @@ function reset() {
   data.settings = defaultSettings;
   data.sites = [];
   go();
+}
+
+function pathOf(backend) {
+  const slashAt = backend.indexOf('/');
+  if (slashAt !== -1) {
+    return backend.substring(slashAt);
+  } else {
+    return '/';
+  }
+}
+
+function withoutPath(backend) {
+  const slashAt = backend.indexOf('/');
+  if (slashAt !== -1) {
+    return backend.substring(0, slashAt);
+  } else {
+    return backend;
+  }
 }

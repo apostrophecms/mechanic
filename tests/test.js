@@ -32,7 +32,13 @@ expect({
     {
       "shortname": "mysite",
       "host": "mysite.com",
-      "backends": [ 'localhost:3000' ]
+      "backends": [ 'localhost:3000' ],
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3000" ]
+        }
+      ]
     }
   ]
 }, 'Test failed: adding a site should store the right JSON');
@@ -51,7 +57,13 @@ expect({
     {
       "shortname": "mysite",
       "host": "mysite.com",
-      "backends": [ 'localhost:3001' ]
+      "backends": [ 'localhost:3001' ],
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3001" ]
+        }
+      ]
     }
   ]
 }, 'Test failed: alias was not accepted, or update command rejected, or host:port parsed badly');
@@ -83,6 +95,12 @@ expect({
       "shortname": "mysite",
       "host": "mysite.com",
       "backends": [ 'localhost:3000' ],
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3000" ]
+        }
+      ],
       "aliases": [ 'www.mysite.com', 'mysite.temporary.com' ]
     }
   ]
@@ -116,13 +134,25 @@ expect({
       "shortname": "site1",
       "host": "site1.com",
       "backends": [ 'localhost:3000' ],
-      "https": true
+      "https": true,
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3000" ]
+        }
+      ]
     },
     {
       "shortname": "site2",
       "host": "site2.com",
       "backends": [ 'localhost:3001' ],
-      "https": true
+      "https": true,
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3001" ]
+        }
+      ]
     }
   ]
 }, 'Test failed: adding two sites with https should store the right JSON');
@@ -142,13 +172,25 @@ expect({
       "shortname": "site1",
       "host": "site1.com",
       "backends": [ 'localhost:3000' ],
-      "https": true
+      "https": true,
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3000" ]
+        }
+      ]
     },
     {
       "shortname": "site2",
       "host": "site2.com",
       "backends": [ 'localhost:3001' ],
       "https": true,
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3001" ]
+        }
+      ],
       "redirect-to-https": true,
       "websockets": true
     }
@@ -190,16 +232,69 @@ expect({
     {
       "shortname": "nondefaultsite",
       "host": "nondefaultsite.com",
-      "backends": [ 'localhost:3000' ]
+      "backends": [ 'localhost:3000' ],
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3000" ]
+        }
+      ]
     },
     {
       "shortname": "defaultsite",
       "host": "defaultsite.com",
       "default": true,
-      "backends": [ 'localhost:3000' ]
+      "backends": [ 'localhost:3000' ],
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3000" ]
+        }
+      ]
     }
   ]
 }, 'Test failed: default site should always wind up at the end of the list');
+
+shelljs.exec('node ../app.js --data=./test.json update defaultsite --backends=localhost:3000,localhost:4000/ci-server');
+
+expect({
+  settings: {
+    conf: './nginx',
+    logs: './logs',
+    restart: 'touch restarted',
+    overrides: './mechanic-overrides',
+    bind: '*'
+  },
+  "sites": [
+    {
+      "shortname": "nondefaultsite",
+      "host": "nondefaultsite.com",
+      "backends": [ 'localhost:3000' ],
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3000" ]
+        }
+      ]
+    },
+    {
+      "shortname": "defaultsite",
+      "host": "defaultsite.com",
+      "default": true,
+      "backends": [ 'localhost:3000', 'localhost:4000/ci-server' ],
+      "backendGroups": [
+        {
+          "path": "/",
+          "backends": [ "localhost:3000" ]
+        },
+        {
+          "path": "/ci-server",
+          "backends": [ "localhost:4000" ]
+        }
+      ]
+    }
+  ]
+}, 'Test failed: ci server backend not listed properly');
 
 if (!fs.existsSync('./mechanic-overrides/mysite/location')) {
   console.error('location override file for mysite does not exist');
@@ -210,6 +305,9 @@ function expect(correct, message) {
   var data = JSON.parse(fs.readFileSync('test.json', 'utf8'));
   if (JSON.stringify(data) !== JSON.stringify(correct)) {
     console.error(message);
+    console.error('EXPECTED:');
+    console.error(JSON.stringify(correct));
+    console.error('ACTUAL:');
     console.error(JSON.stringify(data));
     process.exit(1);
   }

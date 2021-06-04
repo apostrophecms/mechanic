@@ -1,5 +1,8 @@
 # Changelog
 
+## UNRELEASED
+Support for path-specific backends, i.e. backends that only accept traffic for a certain path prefix. This is handy for routing traffic to microservices without subdomains.
+
 ## 1.6.1
 Adds previous TLS update across template.
 

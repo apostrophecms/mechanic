@@ -141,6 +141,26 @@ mechanic update mysite --https-upstream
 
 Note that this can introduce a significant performance overhead, as nginx will need to validate certificates and encrypt the connection with the backend.
 
+### Backends for certain URL paths only
+
+You can configure a backend exclusively for with a certain path prefix:
+
+```
+mechanic update mysite --backends=3000,3001:/ci-server
+```
+
+This is also supported for backends not running on the same computer:
+
+```
+mechanic update mysite --backends=192.168.1.2:3000,192.168.1.2:4000/ci-server
+```
+
+The prefix **is included** in the URL passed through to the backend.
+
+If such a backend is present, matching requests are sent only to it. You may have more than one for the same path, in which case they are load balanced by nginx in the usual way.
+
+This feature is useful when microservices share a single hostname.
+
 ## Secure sites
 
 Now we've added ecommerce and we need a secure site:
