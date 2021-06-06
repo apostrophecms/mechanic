@@ -303,7 +303,8 @@ function go() {
   let sites = _.filter(data.sites, validSiteFilter);
 
   sites = sites.map(site => {
-    site.backends.sort((b1, b2) => {
+    const backends = site.backends || [];
+    backends.sort((b1, b2) => {
       const p1 = pathOf(b1);
       const p2 = pathOf(b2);
       if (p1 < p2) {
@@ -317,7 +318,7 @@ function go() {
     site.backendGroups = [];
     let lastPath = null;
     let group;
-    for (const backend of site.backends) {
+    for (const backend of backends) {
       if (pathOf(backend) !== lastPath) {
         group = {
           path: pathOf(backend),
