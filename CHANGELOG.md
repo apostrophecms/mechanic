@@ -1,6 +1,6 @@
 # Changelog
 
-## UNRELEASED
+## 1.7.0
 Support for path-specific backends, i.e. backends that only accept traffic for a certain path prefix. This is handy for routing traffic to microservices without subdomains.
 
 ## 1.6.1
