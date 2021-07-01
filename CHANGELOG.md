@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.8.0 2021-07-01
+Specify `ssl_prefer_server_ciphers on`, which results in more secure cipher choices being chosen first and an "A" rating from SLL Labs without micromanagement of cipher settings.
+
 ## 1.7.0
 Support for path-specific backends, i.e. backends that only accept traffic for a certain path prefix. This is handy for routing traffic to microservices without subdomains.
 
