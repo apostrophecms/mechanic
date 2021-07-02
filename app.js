@@ -303,6 +303,7 @@ function go() {
   let sites = _.filter(data.sites, validSiteFilter);
 
   sites = sites.map(site => {
+    site.backends = site.backends || [];
     site.backends.sort((b1, b2) => {
       const p1 = pathOf(b1);
       const p2 = pathOf(b2);
