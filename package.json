@@ -27,7 +27,7 @@
     "lodash": "^4.0.0",
     "prettiest": "^1.1.0",
     "shell-escape": "^0.2.0",
-    "shelljs": "^0.3.0"
+    "shelljs": "^0.8.5"
   },
   "devDependencies": {
     "eslint": "^4.0.0",
