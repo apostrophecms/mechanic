@@ -1,5 +1,3 @@
-[![CircleCI](https://circleci.com/gh/apostrophecms/mechanic/tree/master.svg?style=svg)](https://circleci.com/gh/apostrophecms/mechanic/tree/master)
-
 # mechanic
 
 ## Purpose
