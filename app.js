@@ -19,9 +19,9 @@ if (argv.data) {
   }
 }
 
-let data = require('prettiest')({ json: dataFile });
+const data = require('prettiest')({ json: dataFile });
 
-let defaultSettings = {
+const defaultSettings = {
   conf: '/etc/nginx/conf.d',
   overrides: '/etc/nginx/mechanic-overrides',
   logs: '/var/log/nginx',
@@ -32,40 +32,40 @@ let defaultSettings = {
 _.defaults(data, { settings: {} });
 _.defaults(data.settings, defaultSettings);
 
-let settings = data.settings;
+const settings = data.settings;
 
 const nunjucks = require('@apostrophecms/nunjucks');
 
-let command = argv._[0];
+const command = argv._[0];
 if (!command) {
   usage();
 }
 
-let aliases = {
-  'backend': 'backends'
+const aliases = {
+  backend: 'backends'
 };
 
-let options = {
-  'host': 'string',
-  'backends': 'addresses',
-  'aliases': 'strings',
-  'canonical': 'boolean',
-  'default': 'boolean',
-  'static': 'string',
-  'autoindex': 'boolean',
-  'https': 'boolean',
-  'http2': 'boolean',
+const options = {
+  host: 'string',
+  backends: 'addresses',
+  aliases: 'strings',
+  canonical: 'boolean',
+  default: 'boolean',
+  static: 'string',
+  autoindex: 'boolean',
+  https: 'boolean',
+  http2: 'boolean',
   'redirect-to-https': 'boolean',
   'https-upstream': 'boolean',
-  'websocket': 'boolean', // Included for accidental BC coverage.
-  'websockets': 'boolean',
-  'redirect': 'string',
+  websocket: 'boolean', // Included for accidental BC coverage.
+  websockets: 'boolean',
+  redirect: 'string',
   'redirect-full': 'string',
-  'permanent': 'boolean',
-  'path': 'string'
+  permanent: 'boolean',
+  path: 'string'
 };
 
-let parsers = {
+const parsers = {
   string: function(s) {
     return s.trim();
   },
@@ -79,18 +79,17 @@ let parsers = {
   },
   addresses: function(s) {
     return _.map(parsers.strings(s), function(s) {
-      let matches = s.match(/^(([^:]+):)?(\d+)(\/.*)?$/);
+      const matches = s.match(/^(([^:]+):)?(\d+)(\/.*)?$/);
       if (!matches) {
         throw 'A list of port numbers and/or address:port combinations with optional paths is expected, separated by commas';
       }
-      let host, port, path;
+      let host = 'localhost';
       if (matches[2]) {
         host = matches[2];
-      } else {
-        host = 'localhost';
       }
-      port = matches[3];
-      path = matches[4];
+
+      const port = matches[3];
+      const path = matches[4];
       const pathString = (path != null) ? path : '';
       return `${host}:${port}${pathString}`;
     });
@@ -105,9 +104,9 @@ let parsers = {
   // Have a feeling we'll use this soon
   keyValue: function(s) {
     s = parsers.string(s);
-    let o = {};
+    const o = {};
     _.each(s, function(v) {
-      let matches = v.match(/^([^:]+):(.*)$/);
+      const matches = v.match(/^([^:]+):(.*)$/);
       if (!matches) {
         throw 'Key-value pairs expected, like this: key:value,key:value';
       }
@@ -117,7 +116,7 @@ let parsers = {
   }
 };
 
-let stringifiers = {
+const stringifiers = {
   string: function(s) {
     return s;
   },
@@ -172,7 +171,7 @@ function set() {
   // Top-level settings: nginx conf folder, logs folder,
   // and restart command
   if (argv._.length !== 3) {
-    usage("The \"set\" command requires two parameters:\n\nmechanic set key value");
+    usage('The "set" command requires two parameters:\n\nmechanic set key value');
   }
 
   data.settings[argv._[1]] = argv._[2];
@@ -184,14 +183,14 @@ function update(add) {
     usage('shortname argument is required; also --host');
   }
 
-  let shortname = argv._[1];
+  const shortname = argv._[1];
   let site;
 
   if (add) {
     if (findSite(shortname)) {
       usage('Site already exists, use update');
     } else {
-      site = { shortname: shortname };
+      site = { shortname };
       data.sites.push(site);
     }
   } else {
@@ -217,7 +216,7 @@ function update(add) {
       if (key === 'redirect') {
         delete site['redirect-full'];
       } else if (key === 'redirect-full') {
-        delete site['redirect'];
+        delete site.redirect;
       }
       site[key] = parsers[options[key]](val);
     } catch (e) {
@@ -234,7 +233,7 @@ function remove() {
     usage();
   }
 
-  let shortname = argv._[1];
+  const shortname = argv._[1];
 
   let found = false;
   data.sites = _.filter(data.sites || [], function(site) {
@@ -284,15 +283,16 @@ function go() {
         return -1;
       } else if (b._index > a._index) {
         return 1;
-      } else {
-        return 0;
       }
+
+      return 0;
     } else {
       if (a.default) {
         return 1;
       } else if (b.default) {
         return -1;
       }
+      return 0;
     }
   });
 
@@ -335,11 +335,11 @@ function go() {
     return site;
   });
 
-  let template = fs.readFileSync(settings.template || (__dirname + '/template.conf'), 'utf8');
+  const template = fs.readFileSync(settings.template || (__dirname + '/template.conf'), 'utf8');
 
-  let output = nunjucks.renderString(template, {
-    sites: sites,
-    settings: settings
+  const output = nunjucks.renderString(template, {
+    sites,
+    settings
   });
 
   // Set up include-able files to allow
@@ -353,9 +353,9 @@ function go() {
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder);
     }
-    let files = [ 'location', 'proxy', 'server', 'top' ];
+    const files = [ 'location', 'proxy', 'server', 'top' ];
     _.each(files, function(file) {
-      let filename = folder + '/' + file;
+      const filename = folder + '/' + file;
       if (!fs.existsSync(filename)) {
         fs.writeFileSync(filename, '# Your custom nginx directives go here\n');
       }
@@ -365,7 +365,7 @@ function go() {
   fs.writeFileSync(settings.conf + '/mechanic.conf', output);
 
   if (settings.restart !== false) {
-    let restart = settings.restart || 'service nginx reload';
+    const restart = settings.restart || 'service nginx reload';
     if (shelljs.exec(restart).code !== 0) {
       console.error('ERROR: unable to reload nginx configuration!');
       process.exit(3);
@@ -390,7 +390,7 @@ function list() {
     }
   });
   _.each(data.sites, function(site) {
-    let words = [ 'mechanic', 'add', site.shortname ];
+    const words = [ 'mechanic', 'add', site.shortname ];
     _.each(site, function(val, key) {
       if (_.has(stringifiers, options[key])) {
         words.push('--' + key + '=' + stringifiers[options[key]](val));
