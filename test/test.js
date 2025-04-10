@@ -1,6 +1,6 @@
-var fs = require('fs');
+const fs = require('fs');
 
-var shelljs = require('shelljs');
+const shelljs = require('shelljs');
 
 if (fs.existsSync('./mechanic-overrides/mysite/location')) {
   fs.unlinkSync('./mechanic-overrides/mysite/location');
@@ -28,15 +28,15 @@ expect({
     overrides: './mechanic-overrides',
     bind: '*'
   },
-  "sites": [
+  sites: [
     {
-      "shortname": "mysite",
-      "host": "mysite.com",
-      "backends": [ 'localhost:3000' ],
-      "backendGroups": [
+      shortname: 'mysite',
+      host: 'mysite.com',
+      backends: [ 'localhost:3000' ],
+      backendGroups: [
         {
-          "path": "/",
-          "backends": [ "localhost:3000" ]
+          path: '/',
+          backends: [ 'localhost:3000' ]
         }
       ]
     }
@@ -53,15 +53,15 @@ expect({
     overrides: './mechanic-overrides',
     bind: '*'
   },
-  "sites": [
+  sites: [
     {
-      "shortname": "mysite",
-      "host": "mysite.com",
-      "backends": [ 'localhost:3001' ],
-      "backendGroups": [
+      shortname: 'mysite',
+      host: 'mysite.com',
+      backends: [ 'localhost:3001' ],
+      backendGroups: [
         {
-          "path": "/",
-          "backends": [ "localhost:3001" ]
+          path: '/',
+          backends: [ 'localhost:3001' ]
         }
       ]
     }
@@ -74,7 +74,7 @@ shelljs.exec('node ../app.js --data=./test.json update mysite --host=mysite.com 
 
 // test a bogus option
 
-var result = shelljs.exec('node ../app.js --data=./test.json update mysite --host=mysite.com --backends=3000 --ludicrous', { silent: true });
+const result = shelljs.exec('node ../app.js --data=./test.json update mysite --host=mysite.com --backends=3000 --ludicrous', { silent: true });
 if (!result.output.match(/Unrecognized option: ludicrous/)) {
   console.error('Test failed: bogus option did not result in error.');
   process.exit(1);
@@ -90,18 +90,18 @@ expect({
     overrides: './mechanic-overrides',
     bind: '*'
   },
-  "sites": [
+  sites: [
     {
-      "shortname": "mysite",
-      "host": "mysite.com",
-      "backends": [ 'localhost:3000' ],
-      "backendGroups": [
+      shortname: 'mysite',
+      host: 'mysite.com',
+      backends: [ 'localhost:3000' ],
+      backendGroups: [
         {
-          "path": "/",
-          "backends": [ "localhost:3000" ]
+          path: '/',
+          backends: [ 'localhost:3000' ]
         }
       ],
-      "aliases": [ 'www.mysite.com', 'mysite.temporary.com' ]
+      aliases: [ 'www.mysite.com', 'mysite.temporary.com' ]
     }
   ]
 }, 'Test failed: updating a site should store the right JSON');
@@ -116,7 +116,7 @@ expect({
     overrides: './mechanic-overrides',
     bind: '*'
   },
-  "sites": []
+  sites: []
 }, 'Test failed: removing a site should store the right JSON');
 
 shelljs.exec('node ../app.js --data=./test.json add site1 --host=site1.com --backends=3000 --https');
@@ -129,28 +129,28 @@ expect({
     overrides: './mechanic-overrides',
     bind: '*'
   },
-  "sites": [
+  sites: [
     {
-      "shortname": "site1",
-      "host": "site1.com",
-      "backends": [ 'localhost:3000' ],
-      "https": true,
-      "backendGroups": [
+      shortname: 'site1',
+      host: 'site1.com',
+      backends: [ 'localhost:3000' ],
+      https: true,
+      backendGroups: [
         {
-          "path": "/",
-          "backends": [ "localhost:3000" ]
+          path: '/',
+          backends: [ 'localhost:3000' ]
         }
       ]
     },
     {
-      "shortname": "site2",
-      "host": "site2.com",
-      "backends": [ 'localhost:3001' ],
-      "https": true,
-      "backendGroups": [
+      shortname: 'site2',
+      host: 'site2.com',
+      backends: [ 'localhost:3001' ],
+      https: true,
+      backendGroups: [
         {
-          "path": "/",
-          "backends": [ "localhost:3001" ]
+          path: '/',
+          backends: [ 'localhost:3001' ]
         }
       ]
     }
@@ -167,47 +167,47 @@ expect({
     overrides: './mechanic-overrides',
     bind: '*'
   },
-  "sites": [
+  sites: [
     {
-      "shortname": "site1",
-      "host": "site1.com",
-      "backends": [ 'localhost:3000' ],
-      "https": true,
-      "backendGroups": [
+      shortname: 'site1',
+      host: 'site1.com',
+      backends: [ 'localhost:3000' ],
+      https: true,
+      backendGroups: [
         {
-          "path": "/",
-          "backends": [ "localhost:3000" ]
+          path: '/',
+          backends: [ 'localhost:3000' ]
         }
       ]
     },
     {
-      "shortname": "site2",
-      "host": "site2.com",
-      "backends": [ 'localhost:3001' ],
-      "https": true,
-      "backendGroups": [
+      shortname: 'site2',
+      host: 'site2.com',
+      backends: [ 'localhost:3001' ],
+      https: true,
+      backendGroups: [
         {
-          "path": "/",
-          "backends": [ "localhost:3001" ]
+          path: '/',
+          backends: [ 'localhost:3001' ]
         }
       ],
-      "redirect-to-https": true,
-      "websockets": true
+      'redirect-to-https': true,
+      websockets: true
     }
   ]
 }, 'Test failed: redirect-to-https should add the right JSON');
 
-var output = shelljs.exec('node ../app.js --data=./test.json list', { silent: true }).output;
+const output = shelljs.exec('node ../app.js --data=./test.json list', { silent: true }).output;
 
-var expected = "mechanic set conf './nginx' \n\n" +
-  "mechanic set logs './logs' \n\n" +
-  "mechanic set restart 'touch restarted' \n\n" +
-  "mechanic set overrides './mechanic-overrides' \n\n" +
-  "mechanic add site1 '--host=site1.com' '--backends=localhost:3000' '--https=true' \n\n" +
-  "mechanic add site2 '--host=site2.com' '--backends=localhost:3001' '--https=true' '--redirect-to-https=true' '--websockets=true' \n\n";
+const expected = 'mechanic set conf \'./nginx\' \n\n' +
+  'mechanic set logs \'./logs\' \n\n' +
+  'mechanic set restart \'touch restarted\' \n\n' +
+  'mechanic set overrides \'./mechanic-overrides\' \n\n' +
+  'mechanic add site1 \'--host=site1.com\' \'--backends=localhost:3000\' \'--https=true\' \n\n' +
+  'mechanic add site2 \'--host=site2.com\' \'--backends=localhost:3001\' \'--https=true\' \'--redirect-to-https=true\' \'--websockets=true\' \n\n';
 
 if (output !== expected) {
-  console.error("Test failed: --list did not output correct commands to establish the two sites again");
+  console.error('Test failed: --list did not output correct commands to establish the two sites again');
   console.error('GOT:');
   console.error(output);
   console.error('EXPECTED:');
@@ -228,27 +228,27 @@ expect({
     overrides: './mechanic-overrides',
     bind: '*'
   },
-  "sites": [
+  sites: [
     {
-      "shortname": "nondefaultsite",
-      "host": "nondefaultsite.com",
-      "backends": [ 'localhost:3000' ],
-      "backendGroups": [
+      shortname: 'nondefaultsite',
+      host: 'nondefaultsite.com',
+      backends: [ 'localhost:3000' ],
+      backendGroups: [
         {
-          "path": "/",
-          "backends": [ "localhost:3000" ]
+          path: '/',
+          backends: [ 'localhost:3000' ]
         }
       ]
     },
     {
-      "shortname": "defaultsite",
-      "host": "defaultsite.com",
-      "default": true,
-      "backends": [ 'localhost:3000' ],
-      "backendGroups": [
+      shortname: 'defaultsite',
+      host: 'defaultsite.com',
+      default: true,
+      backends: [ 'localhost:3000' ],
+      backendGroups: [
         {
-          "path": "/",
-          "backends": [ "localhost:3000" ]
+          path: '/',
+          backends: [ 'localhost:3000' ]
         }
       ]
     }
@@ -265,31 +265,31 @@ expect({
     overrides: './mechanic-overrides',
     bind: '*'
   },
-  "sites": [
+  sites: [
     {
-      "shortname": "nondefaultsite",
-      "host": "nondefaultsite.com",
-      "backends": [ 'localhost:3000' ],
-      "backendGroups": [
+      shortname: 'nondefaultsite',
+      host: 'nondefaultsite.com',
+      backends: [ 'localhost:3000' ],
+      backendGroups: [
         {
-          "path": "/",
-          "backends": [ "localhost:3000" ]
+          path: '/',
+          backends: [ 'localhost:3000' ]
         }
       ]
     },
     {
-      "shortname": "defaultsite",
-      "host": "defaultsite.com",
-      "default": true,
-      "backends": [ 'localhost:3000', 'localhost:4000/ci-server' ],
-      "backendGroups": [
+      shortname: 'defaultsite',
+      host: 'defaultsite.com',
+      default: true,
+      backends: [ 'localhost:3000', 'localhost:4000/ci-server' ],
+      backendGroups: [
         {
-          "path": "/",
-          "backends": [ "localhost:3000" ]
+          path: '/',
+          backends: [ 'localhost:3000' ]
         },
         {
-          "path": "/ci-server",
-          "backends": [ "localhost:4000" ]
+          path: '/ci-server',
+          backends: [ 'localhost:4000' ]
         }
       ]
     }
@@ -302,7 +302,7 @@ if (!fs.existsSync('./mechanic-overrides/mysite/location')) {
 }
 
 function expect(correct, message) {
-  var data = JSON.parse(fs.readFileSync('test.json', 'utf8'));
+  const data = JSON.parse(fs.readFileSync('test.json', 'utf8'));
   if (JSON.stringify(data) !== JSON.stringify(correct)) {
     console.error(message);
     console.error('EXPECTED:');
